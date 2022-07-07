@@ -2,7 +2,7 @@ from django.db import models
 from projects.models import Project
 # Create your models here.
 
-class Diagrams(models.Model):
+class Diagram(models.Model):
     """Model to represent a diagram"""
     project_id = models.ForeignKey(Project, on_delete=models.DO_NOTHING)
     name = models.TextField()
@@ -13,6 +13,6 @@ class Diagrams(models.Model):
 
 
 class UserStory(models.Model):
-    diagram_id = models.ForeignKey(Diagrams, on_delete=models.CASCADE, related_name="user_stories")
+    diagram_id = models.ForeignKey(Diagram, on_delete=models.CASCADE, related_name="user_stories")
     data = models.JSONField()
 

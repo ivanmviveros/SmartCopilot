@@ -1,6 +1,20 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+"""Views for the projects app"""
+from rest_framework.decorators import api_view
+from core.crud.standard import Crud
+
+from .models import Project
+from .serializers import ProjectSerializer
 
 # Create your views here.
-def welcome(request):
-    return HttpResponse("hola")
+
+crudObject = crudObject = Crud(ProjectSerializer, Project)
+
+@api_view(['GET'])
+def get(request, projectId):
+    projectGet = crudObject.get(request, projectId)
+    return projectGet
+
+@api_view(['GET'])
+def list(request):
+    projectList = crudObject.list(request)
+    return projectList

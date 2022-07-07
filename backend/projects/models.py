@@ -5,5 +5,5 @@ class Project(models.Model):
     description = models.TextField()
     creation_date = models.DateTimeField()
 
-   
-
+    def __str__(self) -> str:
+        return self.name

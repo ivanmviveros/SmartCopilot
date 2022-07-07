@@ -36,11 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',\
+    'rest_framework',
     'corsheaders',
     'projects',
     'diagrams',
-    'users'
+    'users',
 ]
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:3000',
@@ -104,7 +105,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ebpm',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'PASSWORD': 'admin',
         'HOST': 'localhost',
         'PORT': '5432'
     }
