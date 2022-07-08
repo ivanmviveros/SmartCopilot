@@ -14,7 +14,7 @@ function Login(){
         const res = await UserService.login(data)
         const cred = await res.json()
         console.log(cred)
-        navigate('/profile')
+        navigate('/home')
       }catch(error){
         console.log(error)
       }
