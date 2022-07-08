@@ -3,30 +3,29 @@ import Modeler from 'bpmn-js/lib/Modeler';
 // we use stringify to inline an example XML document
 import BPMNDiagram_1 from '../Resources/diagram.bpmn';
 
+function ModelerComponent() {
 
-// make sure you added bpmn-js to your your project
-// dependencies via npm install --save bpmn-js
-import BpmnViewer from 'bpmn-js';
-function ModelerComponent(){
+  // create a modeler
+  const modeler = new Modeler({ container: '#canvas' });
 
-var viewer = new BpmnViewer({
-  container: '#canvas'
-});
+  // Get source
+  function fetchDiagram(url) {
+    return fetch(url).then(response => response.text());
+  }
+
+  async function run() {
+    const diagram = await fetchDiagram('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn')
+    // console.log(diagram)
+    try {
+      await modeler.importXML(diagram);
+      // ...
+    } catch (err) {
+      // ...
+    }
+  }
+  run();
 
 
-viewer.importXML(BPMNDiagram_1).then(function(result) {
-
-  const { warnings } = result;
-
-  console.log('success !', warnings);
-
-  viewer.get('canvas').zoom('fit-viewport');
-}).catch(function(err) {
-
-  const { warnings, message } = err;
-
-  console.log('something went wrong:', warnings, message);
-});
 
 }
 export default ModelerComponent;
