@@ -8,20 +8,40 @@ import Login from './components/Login'
 import Register from './components/Register'
 import Profile from './components/Profile'
 import ModelerComponent from './components/ModelerComponent';
-
 import reportWebVitals from './reportWebVitals';
+import NavBar from './components/NavBar';
+import { UserContextProvider } from './context/UserContext';
+import RequireAuth from './components/RequireAuth';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
-    <Routes>
-        <Route exact path="" element={<Login/>}></Route>
-        <Route exact path="/home" element={<ModelerComponent/>}></Route>
-        <Route exact path="/login" element={<Login/>}></Route>
-        <Route exact path="/register" element={<Register/>}></Route>
-        <Route exact path="/profile" element={<Profile/>}></Route>
-    </Routes>
-  </BrowserRouter>
+  <UserContextProvider>
+      <BrowserRouter>
+        <NavBar/>
+        <Routes>
+            <Route exact 
+              path="/home" 
+              element={
+                <RequireAuth>
+                  <ModelerComponent/>
+                </RequireAuth>
+              }>
+            </Route>
+            <Route exact path="/login" element={<Login/>}></Route>
+            <Route exact path="/register" element={<Register/>}></Route>
+            <Route exact 
+            path="/profile" 
+            element={
+              <RequireAuth>
+              <Profile/>
+            </RequireAuth>
+            }>
+
+            </Route>
+        </Routes>
+    </BrowserRouter>
+  </UserContextProvider>
+
 );
 
 // If you want to start measuring performance in your app, pass a function

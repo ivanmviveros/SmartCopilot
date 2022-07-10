@@ -1,9 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {Link, useNavigate} from 'react-router-dom'
 import * as UserService from "../service/UserService"
+import UserContext from '../context/UserContext';
+import { useEffect } from 'react';
 
 function Login(){
     let navigate = useNavigate();
+    const {stateUse, setStateUser} = useContext(UserContext)
     const [data, setData] = useState({
        username :"",
        password: "",
@@ -14,7 +17,8 @@ function Login(){
         const res = await UserService.login(data)
         const cred = await res.json()
         console.log(cred)
-        navigate('/home')
+        setStateUser(true)
+        navigate('/profile')
       }catch(error){
         console.log(error)
       }
