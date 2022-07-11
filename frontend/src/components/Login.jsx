@@ -1,32 +1,31 @@
-import React, {useState, useContext} from 'react';
-import {Link, useNavigate} from 'react-router-dom'
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom'
 import * as UserService from "../service/UserService"
 import UserContext from '../context/UserContext';
-import { useEffect } from 'react';
 
-function Login(){
+function Login() {
     let navigate = useNavigate();
-    const {stateUse, setStateUser} = useContext(UserContext)
+    const { setStateUser } = useContext(UserContext)
     const [data, setData] = useState({
-       username :"",
-       password: "",
+        username: "",
+        password: "",
     })
 
     const signin = async () => {
-      try{
-        const res = await UserService.login(data)
-        const cred = await res.json()
-        console.log(cred)
-        setStateUser(true)
-        navigate('/profile')
-      }catch(error){
-        console.log(error)
-      }
+        try {
+            const res = await UserService.login(data)
+            const cred = await res.json()
+            console.log(cred)
+            setStateUser(true)
+            navigate('/profile')
+        } catch (error) {
+            console.log(error)
+        }
     }
     const handleInputChange = (event) => {
         setData({
             ...data,
-            [event.target.name]:event.target.value
+            [event.target.name]: event.target.value
         })
     }
 
@@ -34,45 +33,45 @@ function Login(){
         event.preventDefault()
         signin()
     }
-    
+
     return (
-    <div className="container">
-        <div className="card text-center">
-            <div className="card-header bg-dark text-white">
-                <h5 className='card-title'>Login</h5>
-            </div>
-            <div className="card-body">
-            <form onSubmit={sendData} className="mb-3">
-                <div className="row mb-3">
-                    <div className="col col-md-4">
-                        <h5 className="card-title">Username</h5>
-                    </div>
-                    <div className="col ">
-                        <input onChange={handleInputChange} type="text" className="form-control" id="username" name="username"/>
-                        <small className="text-muted">Min 8 letters</small>
-                    </div>
+        <div className="container">
+            <div className="card text-center">
+                <div className="card-header bg-dark text-white">
+                    <h5 className='card-title'>Login</h5>
                 </div>
-            
-                <div className="row mb-3">
+                <div className="card-body">
+                    <form onSubmit={sendData} className="mb-3">
+                        <div className="row mb-3">
+                            <div className="col col-md-4">
+                                <h5 className="card-title">Username</h5>
+                            </div>
+                            <div className="col ">
+                                <input onChange={handleInputChange} type="text" className="form-control" id="username" name="username" />
+                                <small className="text-muted">Min 8 letters</small>
+                            </div>
+                        </div>
 
-                    <div className="col col-md-4">
-                        <h5 className="card-title">Password</h5>
-                    </div>
+                        <div className="row mb-3">
 
-                    <div className="col ">
-                        <input onChange={handleInputChange} type="password" className="form-control" id="password" name="password"/>
-                        <small className="text-muted">Please introduce secure password</small>
-                    </div>
+                            <div className="col col-md-4">
+                                <h5 className="card-title">Password</h5>
+                            </div>
 
+                            <div className="col ">
+                                <input onChange={handleInputChange} type="password" className="form-control" id="password" name="password" />
+                                <small className="text-muted">Please introduce secure password</small>
+                            </div>
+
+                        </div>
+                        <div className="text-center">
+                            <p>Not a member? <Link to="/register">Register</Link></p>
+                        </div>
+                        <button type="submit" className="btn btn-primary form-control">Go!</button>
+                    </form>
                 </div>
-                <div className="text-center">
-                    <p>Not a member? <Link to="/register">Register</Link></p>
-                </div>
-                <button type="submit"  className="btn btn-primary form-control">Go!</button>
-            </form>
             </div>
         </div>
-    </div>
     );
 }
 

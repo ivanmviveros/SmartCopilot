@@ -14,14 +14,14 @@ function Register(){
     })
 
     const signup = async () => {
-      try{
-        const res = await UserService.register(data)
-        const cred = await res.json()
-        console.log(cred)
-        navigate('/login')
-      }catch(error){
-        console.log(error)
-      }
+        try{
+          const res = await UserService.register(data)
+          const cred = await res.json()
+          console.log(cred)
+          navigate('/login')
+        }catch(error){
+          console.log(error)
+        }
     }
     const handleInputChange = (event) => {
         setData({
@@ -60,7 +60,7 @@ function Register(){
                         <h5 className="card-title">Last name</h5>
                     </div>
                     <div className="col ">
-                        <input onChange={handleInputChange} type="text" className="form-control" id="lastname" name="lastname"/>
+                        <input onChange={handleInputChange} type="text" className="form-control" id="lastname" name="last_name"/>
                         <small class="text-muted">Introduce your last name</small>
                     </div>
                 </div>

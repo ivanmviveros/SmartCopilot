@@ -1,7 +1,9 @@
-const API_URL = "http://127.0.0.1:8000/users/login/"
+import {
+    API_URL
+} from '../utils';
 
 export const login = async (data) => {
-    return await fetch(API_URL,{
+    return await fetch(`${API_URL}/users/login/`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -14,10 +16,10 @@ export const login = async (data) => {
 }
 
 export const register = async (data) => {
-    return await fetch(API_URL,{
-        method:'POST',
-        headers : {
-            'Content-Type':'application/json'
+    return await fetch(`${API_URL}/users/signup/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             'username': String(data.username),

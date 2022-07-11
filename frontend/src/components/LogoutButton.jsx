@@ -1,19 +1,18 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import UserContext from '../context/UserContext';
-import {useNavigate, Navigate, useLocation} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const LogoutButton = () => {
-  const {stateUser, setStateUser} = useContext(UserContext)
-  let location = useLocation()
+  const { setStateUser } = useContext(UserContext)
 
-  const logout  = (event)=>{
+  const logout = (event) => {
     event.preventDefault()
-    setStateUser(false)    
+    setStateUser(false)
   }
   return (
-      <span className="navbar-text">
-        <a className="btn" onClick={logout}>logout</a>
-      </span>
+    <span className="navbar-text">
+      <Link className="btn" onClick={logout} to="/login">logout</Link>
+    </span>
   );
 };
 
