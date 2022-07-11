@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import os
 import environ
+from django.contrib.staticfiles import handlers
 
 env = environ.Env()
 
@@ -182,3 +183,15 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://127.0.0.1',
 ]
+
+class CORSStaticFilesHandler(handlers.StaticFilesHandler):
+    def serve(self, request):
+        response = super().serve(request)
+        try:
+            if request.headers['Origin'] in CORS_ALLOWED_ORIGINS:
+                response['Access-Control-Allow-Origin'] = '*'
+        except KeyError:
+            pass
+        return response
+
+handlers.StaticFilesHandler = CORSStaticFilesHandler
