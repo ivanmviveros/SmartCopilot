@@ -9,8 +9,8 @@ class Diagram(models.Model):
     description = models.TextField()
     xml = models.TextField()
     properties = models.TextField()
-    creation_date = models.DateTimeField()
-
+    creation_date = models.DateTimeField(null=True,blank=True)
+    update_date = models.DateTimeField(null=True,blank=True)
 
 class UserStory(models.Model):
     diagram_id = models.ForeignKey(Diagram, on_delete=models.CASCADE, related_name="user_stories")

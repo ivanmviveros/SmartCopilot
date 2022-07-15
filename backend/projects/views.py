@@ -9,6 +9,11 @@ from .serializers import ProjectSerializer
 
 crudObject = crudObject = Crud(ProjectSerializer, Project)
 
+@api_view(['POST'])
+def create(request):
+    projectCreate = crudObject.create(request)
+    return projectCreate
+
 @api_view(['GET'])
 def get(request, projectId):
     projectGet = crudObject.get(request, projectId)
@@ -18,3 +23,8 @@ def get(request, projectId):
 def list(request):
     projectList = crudObject.list(request)
     return projectList
+
+@api_view(['PUT'])
+def update(request, projectId):
+    projectUpdate = crudObject.update(request, projectId)
+    return projectUpdate

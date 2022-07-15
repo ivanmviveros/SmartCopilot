@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from core.crud.exeptions import NonCallableParam
 from django.db.models import Model
 from rest_framework.serializers import Serializer
+import datetime
 
 class Crud():
     """Manages the standard functions for crud in modules"""
@@ -15,7 +16,7 @@ class Crud():
         self.serializer_class = serializer_class
         self.model_class = model_class
 
-    def save_instance(self, data, request=None, identifier=0, after_save=None):
+    def save_instance(self, data, identifier=0):
         """Saves a model intance"""
         if identifier:
             model_obj = self.model_class.objects.get(pk=identifier)
@@ -25,47 +26,28 @@ class Crud():
             
         if data_serializer.is_valid():
             model_obj = data_serializer.save()
-            if Crud.validate_function(after_save):
-                after_save(request, data_serializer)
             return {"success": True, "id": model_obj.pk}, status.HTTP_201_CREATED
 
         answer = self.error_data(data_serializer)
         return answer, status.HTTP_400_BAD_REQUEST
 
-    def add(self, request, before_add=None):
+    def create(self, request):
         """Tries to create a row in the database and returns the result"""
-        if Crud.validate_function(before_add):
-            data = before_add(request.data.copy())
-        else:
-            data = request.data.copy()
-        answer, answer_status = self.save_instance(data, request)
+        data = self.set_date(request.data.copy(), ['creation_date', 'update_date'])
+        answer, answer_status = self.save_instance(data)
         return Response(answer, status=answer_status, content_type='application/json')
 
-    def replace(self, request, identifier, before_replace=None):
-        """Tries to update a row in the db and returns the result"""    
-        if Crud.validate_function(before_replace):
-            data = before_replace(request.data.copy())
-        else:
-            data = request.data.copy()
-        answer, answer_status =  self.save_instance(data, request, identifier)
-        return Response(answer, status=answer_status)
-
-    def get(self, request, identifier, alter_model=None, alter_return=None):
+    def get(self, request, identifier):
         """Return a JSON response with data for the given id"""
         try:
             model_obj = self.model_class.objects.get(pk=identifier)
             data_serializer = self.serializer_class(model_obj)
             model_data = data_serializer.data.copy()
-            if Crud.validate_function(alter_model):
-                model_data = alter_model(model_data)
 
             data = {
                 "success": True,
                 "data": model_data
             }
-
-            if Crud.validate_function(alter_return):
-                data = alter_return(request, data)
 
             return Response(data, status=status.HTTP_200_OK)
         except self.model_class.DoesNotExist:
@@ -74,16 +56,6 @@ class Crud():
                 "error": "No existe el registro, quiza haya sido borrado hace poco"
             }
             return Response(data, status=status.HTTP_404_NOT_FOUND)
-
-    def delete(self, identifier, message):
-        """Tries to delete a row from db and returns the result"""
-        model_obj = self.model_class.objects.get(id=identifier)
-        model_obj.delete()
-        data = {
-            "success": True,
-            "message": message
-        }
-        return Response(data, status=status.HTTP_200_OK)
 
     def list(self, request):
         """ Returns a JSON response containing registered users"""
@@ -95,6 +67,29 @@ class Crud():
             'data': result.data
         }
         return Response(data, status=status.HTTP_200_OK)
+
+    def update(self, request, identifier):
+        """Tries to update a row in the db and returns the result"""    
+        data = self.set_date(request.data.copy(), ['update_date'])
+        answer, answer_status =  self.save_instance(data, identifier)
+        return Response(answer, status=answer_status)
+
+    def delete(self, identifier, message):
+        """Tries to delete a row from db and returns the result"""
+        model_obj = self.model_class.objects.get(id=identifier)
+        model_obj.delete()
+        data = {
+            "success": True,
+            "message": message
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def set_date(data, attributes):
+        """Return data with creation date or/and update date"""
+        for attribute in attributes:
+            data[attribute] = datetime.datetime.now();
+        return data
 
     @staticmethod
     def error_data(serializer):
