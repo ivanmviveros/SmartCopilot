@@ -1,14 +1,15 @@
-import { useContext } from "react"
+// import { useContext } from "react"
 import { useLocation, Navigate } from "react-router-dom";
-import UserContext from '../context/UserContext';
+// import UserContext from '../context/UserContext';
 
 function RequireAuth({children}){
-    const {stateUser} = useContext(UserContext)
+    // const {stateUser} = useContext(UserContext)
     const location = useLocation()
-    if (!stateUser){
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }else{
+    const userToken = sessionStorage.getItem('userToken')
+    if (userToken){
         return children
+    }else{
+        return <Navigate to="/login" state={{ from: location }} replace />;
     }
 }
 export default RequireAuth

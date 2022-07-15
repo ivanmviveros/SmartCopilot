@@ -15,9 +15,10 @@ import RequireAuth from './components/RequireAuth';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <UserContextProvider>
       <BrowserRouter>
+      {/* <RequireAuth>
         <NavBar/>
+      </RequireAuth> */}
         <Routes>
             <Route exact 
               path="/home" 
@@ -40,7 +41,6 @@ root.render(
             </Route>
         </Routes>
     </BrowserRouter>
-  </UserContextProvider>
 
 );
 

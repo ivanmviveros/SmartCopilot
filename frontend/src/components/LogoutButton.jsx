@@ -1,17 +1,18 @@
-import React, { useContext } from "react";
-import UserContext from '../context/UserContext';
-import { Link } from 'react-router-dom';
+// import React, { useContext } from "react";
+// import UserContext from '../context/UserContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 const LogoutButton = () => {
-  const { setStateUser } = useContext(UserContext)
-
+  // const { setStateUser } = useContext(UserContext)
+  let navigate = useNavigate();
   const logout = (event) => {
     event.preventDefault()
-    setStateUser(false)
+    console.log(sessionStorage.getItem("userToken"))
+    sessionStorage.clear()
+    navigate("/login")
   }
   return (
-    <span className="navbar-text">
-      <Link className="btn" onClick={logout} to="/login">logout</Link>
+    <span onClick={logout} style={{cursor: 'pointer'}} className="navbar-text">Logout
     </span>
   );
 };

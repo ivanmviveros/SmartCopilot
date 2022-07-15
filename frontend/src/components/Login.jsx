@@ -1,11 +1,14 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import * as UserService from "../service/UserService"
-import UserContext from '../context/UserContext';
+// import UserContext from '../context/UserContext';
 
 function Login() {
+    let sessionStorage = window.sessionStorage
+    sessionStorage.clear()
+  
     let navigate = useNavigate();
-    const { setStateUser } = useContext(UserContext)
+    // const { setStateUser } = useContext(UserContext)
     const [data, setData] = useState({
         username: "",
         password: "",
@@ -15,9 +18,13 @@ function Login() {
         try {
             const res = await UserService.login(data)
             const cred = await res.json()
-            console.log(cred)
-            setStateUser(true)
-            navigate('/profile')
+            if(cred.access_token){
+                sessionStorage.setItem('userToken', cred.access_token)
+                navigate('/profile')
+            }else{
+                navigate('/login')
+            }
+
         } catch (error) {
             console.log(error)
         }

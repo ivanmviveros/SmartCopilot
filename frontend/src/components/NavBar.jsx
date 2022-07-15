@@ -1,13 +1,12 @@
-import React, { useContext } from "react";
 import { Link } from 'react-router-dom';
 import LogoutButton from "./LogoutButton";
-import UserContext from '../context/UserContext';
 
 
 const NavBar = () => {
-    const { stateUser } = useContext(UserContext)
+    const userToken = sessionStorage.getItem('userToken')
+    console.log(userToken)
     let hide
-    if (stateUser) {
+    if (userToken) {
         hide = false
     } else {
         hide = true

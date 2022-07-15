@@ -1,8 +1,12 @@
 import React from "react";
+import NavBar from "./NavBar";
 
 const Profile = () => {
   return (
-  <div className="">Perfil</div>
+    <>
+    <NavBar />
+    <div className="">Perfil</div>
+  </>
   );
 };
 
