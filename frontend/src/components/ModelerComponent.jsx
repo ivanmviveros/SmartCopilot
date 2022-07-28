@@ -23,7 +23,7 @@ function ModelerComponent() {
 
   async function save(modeler){
     const data = await modeler.saveXML({ format: true });
-    return data.xml
+    console.log(data.xml)
   }
 
   useEffect(() => {

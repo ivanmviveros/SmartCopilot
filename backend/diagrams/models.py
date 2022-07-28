@@ -4,7 +4,6 @@ from projects.models import Project
 
 class Diagram(models.Model):
     """Model to represent a diagram"""
-    project_id = models.ForeignKey(Project, on_delete=models.DO_NOTHING)
     name = models.TextField()
     description = models.TextField()
     xml = models.TextField()

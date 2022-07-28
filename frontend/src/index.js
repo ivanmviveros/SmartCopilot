@@ -9,9 +9,8 @@ import Register from './components/Register'
 import Profile from './components/Profile'
 import ModelerComponent from './components/ModelerComponent';
 import reportWebVitals from './reportWebVitals';
-import NavBar from './components/NavBar';
-import { UserContextProvider } from './context/UserContext';
 import RequireAuth from './components/RequireAuth';
+import DiagramCard from './components/diagram/DiagramCard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -30,6 +29,7 @@ root.render(
             </Route>
             <Route exact path="/login" element={<Login/>}></Route>
             <Route exact path="/register" element={<Register/>}></Route>
+            <Route exact path="/diagram" element={<DiagramCard/>}></Route>
             <Route exact 
             path="/profile" 
             element={

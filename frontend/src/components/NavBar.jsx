@@ -20,12 +20,10 @@ const NavBar = () => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div className="navbar-nav">
-                        <Link className="nav-link" to="/home">Projectts</Link>
-                        {/* <a className="nav-link" href="#">Projects</a> */}
-                        <Link className="nav-link" to="/">Diagrams</Link>
-                        <Link className="nav-link" to="/">Profile</Link>
+                        <Link className="nav-link" to="/home">Projects</Link>
+                        <Link className="nav-link" to="/diagrams">Diagrams</Link>
+                        <Link className="nav-link" to="/">Profile</Link>                    
                     </div>
-
                 </div>
                 {/* componente logout */}
                 <LogoutButton />
