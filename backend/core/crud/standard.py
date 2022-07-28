@@ -53,7 +53,7 @@ class Crud():
         except self.model_class.DoesNotExist:
             data = {
                 "success": False,
-                "error": "No existe el registro, quiza haya sido borrado hace poco"
+                "error": "The record does not exist, it may have been deleted recently"
             }
             return Response(data, status=status.HTTP_404_NOT_FOUND)
 
@@ -76,13 +76,20 @@ class Crud():
 
     def delete(self, identifier, message):
         """Tries to delete a row from db and returns the result"""
-        model_obj = self.model_class.objects.get(id=identifier)
-        model_obj.delete()
-        data = {
-            "success": True,
-            "message": message
-        }
-        return Response(data, status=status.HTTP_200_OK)
+        try:
+            model_obj = self.model_class.objects.get(id=identifier)
+            model_obj.delete()
+            data = {
+                "success": True,
+                "message": message
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except self.model_class.DoesNotExist:
+            data = {
+                "success": False,
+                "error": "The record does not exist, it may have been deleted recently"
+            }
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
     def set_date(data, attributes):
@@ -102,7 +109,7 @@ class Crud():
             "succes": False,
             "Error": {
                 "success": False,
-                "message": "Los datos enviados no son validos",
+                "message": "The data sent are not valid",
                 "details": error_details
             }
         }
