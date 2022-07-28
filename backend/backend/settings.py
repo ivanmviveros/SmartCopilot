@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-ALLOWED_HOSTS = ['bpmnus', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ebpm', 'localhost', '127.0.0.1']
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -89,11 +89,11 @@ ROOT_URLCONF = 'backend.urls'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ebpm',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
+        'PORT': env('DATABASE_PORT')
     }
 }
 
@@ -184,6 +184,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1',
 ]
 
+
 class CORSStaticFilesHandler(handlers.StaticFilesHandler):
     def serve(self, request):
         response = super().serve(request)
@@ -193,5 +194,6 @@ class CORSStaticFilesHandler(handlers.StaticFilesHandler):
         except KeyError:
             pass
         return response
+
 
 handlers.StaticFilesHandler = CORSStaticFilesHandler
