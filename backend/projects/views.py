@@ -28,3 +28,8 @@ def list(request):
 def update(request, projectId):
     projectUpdate = crudObject.update(request, projectId)
     return projectUpdate
+
+@api_view(['DELETE'])
+def delete(request, projectId):
+    projectDelete = crudObject.delete(projectId, 'The project has been successfully removed')
+    return projectDelete

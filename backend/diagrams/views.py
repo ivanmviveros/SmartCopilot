@@ -28,3 +28,8 @@ def list(request):
 def update(request, diagramId):
     diagramUpdate = crudObject.update(request, diagramId)
     return diagramUpdate
+
+@api_view(['DELETE'])
+def delete(request, diagramId):
+    diagramDelete = crudObject.delete(diagramId, 'The diagram has been successfully removed')
+    return diagramDelete
