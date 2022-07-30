@@ -6,7 +6,7 @@ import * as UserService from "../service/UserService"
 function Login() {
     let sessionStorage = window.sessionStorage
     sessionStorage.clear()
-  
+
     let navigate = useNavigate();
     // const { setStateUser } = useContext(UserContext)
     const [data, setData] = useState({
@@ -18,15 +18,15 @@ function Login() {
         try {
             const res = await UserService.login(data)
             const cred = await res.json()
-            if(cred.access_token){
+            if (cred.access_token) {
                 sessionStorage.setItem('userToken', cred.access_token)
                 navigate('/profile')
-            }else{
+            } else {
                 navigate('/login')
             }
 
         } catch (error) {
-            console.log(error)
+            // console.log(error)
         }
     }
     const handleInputChange = (event) => {

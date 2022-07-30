@@ -7,12 +7,12 @@ const LogoutButton = () => {
   let navigate = useNavigate();
   const logout = (event) => {
     event.preventDefault()
-    console.log(sessionStorage.getItem("userToken"))
+    // console.log(sessionStorage.getItem("userToken"))
     sessionStorage.clear()
     navigate("/login")
   }
   return (
-    <span onClick={logout} style={{cursor: 'pointer'}} className="navbar-text">Logout
+    <span onClick={logout} style={{ cursor: 'pointer' }} className="navbar-text">Logout
     </span>
   );
 };

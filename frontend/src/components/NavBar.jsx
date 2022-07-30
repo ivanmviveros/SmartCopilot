@@ -4,7 +4,7 @@ import LogoutButton from "./LogoutButton";
 
 const NavBar = () => {
     const userToken = sessionStorage.getItem('userToken')
-    console.log(userToken)
+    // console.log(userToken)
     let hide
     if (userToken) {
         hide = false
@@ -12,7 +12,7 @@ const NavBar = () => {
         hide = true
     }
     return (
-        <nav hidden={hide} className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav hidden={hide} className="navbar navbar_h navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
                 <Link className="navbar-brand" to="/">Home</Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,7 +22,7 @@ const NavBar = () => {
                     <div className="navbar-nav">
                         <Link className="nav-link" to="/home">Projects</Link>
                         <Link className="nav-link" to="/diagrams">Diagrams</Link>
-                        <Link className="nav-link" to="/">Profile</Link>                    
+                        <Link className="nav-link" to="/">Profile</Link>
                     </div>
                 </div>
                 {/* componente logout */}
