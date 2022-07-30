@@ -17,7 +17,7 @@ export const createDiagram = async (data) => {
 }
 
 export const listDiagram = async () => {
-    let res = await fetch(`${API_URL}/diagrams/list/`, {
+    return await fetch(`${API_URL}/diagrams/list/`, {
         method: "GET",
     })
 }
@@ -40,4 +40,10 @@ export const updateDiagram = async (data, diagramId) => {
             'xml': String(data.xml),
         })
     }).then(response => response.json())
+}
+
+export const deleteDiagram = async (diagramId) => {
+    return await fetch(`${API_URL}/diagrams/delete/${diagramId}`, {
+        method: "DELETE",
+    })
 }

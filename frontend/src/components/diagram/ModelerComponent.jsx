@@ -18,21 +18,12 @@ function ModelerComponent() {
   const [diagram, setDiagram] = useState({
     name: '',
     description: '',
+    xml: '',
   });
 
-
-  // Get source
-  function fetchDiagram(url) {
-    return fetch(url).then(response => response.text());
-  }
-
-  async function run(modeler) {
-    // create a modeler
-    const url = `${API_URL}/static/xml/pizza-collaboration.bpmn.xml`
-    const diagram = await fetchDiagram(url)
-
+  async function run(modeler, xml) {
     try {
-      await modeler.importXML(diagram);
+      await modeler.importXML(xml);
     } catch (err) {
       // console.log(err);
     }
@@ -70,11 +61,11 @@ function ModelerComponent() {
       container: '#canvas'
     });
     setInstanceModeler(modeler);
-    run(modeler);
 
     async function fetchData() {
       const response = await getInfoDiagram(diagramId);
-      setDiagram(response.data)
+      setDiagram(response.data);
+      run(modeler, response.data.xml);
     }
 
     fetchData();
@@ -92,9 +83,6 @@ function ModelerComponent() {
             <button className='btn btn-white rounded-circle ms-1' data-bs-toggle="modal" data-bs-target="#modalDiagram">
               <i className="bi bi-pencil"></i>
             </button>
-            {/* <button className='btn btn-primary ms-1' data-bs-toggle="modal" data-bs-target="#modalDiagram">
-              <i className="bi bi-plus-lg"></i> New diagram
-            </button> */}
           </div>
           {/* Button Save */}
           <button id="save_diagram" className="btn btn-primary" onClick={() => save(instanceModeler)}>
@@ -107,7 +95,6 @@ function ModelerComponent() {
       </div>
 
       <ModalDiagram mode='Edit' handle={handleChange} name={diagram.name} description={diagram.description} />
-      {/* <ModalDiagram mode='Create' handle={handleChange} /> */}
       <Alert message={alertMessage} alertElement={alertElement} />
     </>
   )

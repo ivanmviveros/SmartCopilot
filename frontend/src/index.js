@@ -11,7 +11,7 @@ import Profile from './components/Profile'
 import ModelerComponent from './components/diagram/ModelerComponent';
 import reportWebVitals from './reportWebVitals';
 import RequireAuth from './components/RequireAuth';
-import DiagramCard from './components/diagram/DiagramCard';
+import DiagramsCardList from './components/diagram/DiagramsCardList';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -29,7 +29,7 @@ root.render(
       <Route exact path="/profile" element={<RequireAuth><Profile /></RequireAuth>}></Route>
 
       {/* EBPM */}
-      <Route exact path="/diagram" element={<DiagramCard />}></Route>
+      <Route exact path="/diagrams" element={<RequireAuth><DiagramsCardList /></RequireAuth>}></Route>
       <Route exact path="/diagram/design/:diagramId" element={<RequireAuth><ModelerComponent /></RequireAuth>}></Route>
     </Routes>
   </BrowserRouter>
