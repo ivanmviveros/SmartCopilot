@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class Diagram(models.Model):
     """Model to represent a diagram"""
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     name = models.TextField()
     description = models.TextField()
     xml = models.TextField()

@@ -12,6 +12,7 @@ export const createDiagram = async (data) => {
             'name': String(data.name),
             'description': String(data.description),
             'xml': String(data.xml),
+            'user_id': String(data.user_id)
         })
     }).then(response => response.json())
 }

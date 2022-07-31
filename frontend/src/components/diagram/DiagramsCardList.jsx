@@ -15,7 +15,8 @@ function DiagramsCardList() {
     const userId = sessionStorage.getItem('userId')
     const [newDiagram, setNewDiagram] = useState({
         name: '',
-        description: ''
+        description: '',
+        user_id: '',
     })
 
     const getData = async () => {
@@ -23,7 +24,7 @@ function DiagramsCardList() {
             const res = await DiagramService.listDiagram(userId)
             const data = await res.json()
             setData(data.data)
-            console.log(data)
+            // console.log(data)
         } catch (error) {
             console.log(error)
         }
@@ -41,12 +42,13 @@ function DiagramsCardList() {
             const formData = {
                 name: newDiagram.name,
                 description: newDiagram.description,
-                xml: xml
+                xml: xml,
+                user_id: userId
             }
             const diagram = await DiagramService.createDiagram(formData);
             navigate(`/diagram/design/${diagram.id}`);
         } catch (error) {
-            // console.log(error);
+            console.log(error);
         }
     }
 
@@ -83,6 +85,7 @@ function DiagramsCardList() {
                     : (<h5 className="fst-italic fw-lighte">There is nothing to show</h5>)
                 }
             </div>
+            
 
             <ModalDiagram mode='Create' handle={handleChange} createNewDiagram={createNewDiagram} />
         </>
