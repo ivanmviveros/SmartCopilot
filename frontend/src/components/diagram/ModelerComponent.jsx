@@ -1,7 +1,6 @@
 import Modeler from 'bpmn-js/lib/Modeler';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { API_URL } from '../../utils';
 import { getDiagram as getInfoDiagram, updateDiagram } from '../../service/DiagramService';
 import { Toast } from 'bootstrap';
 
@@ -62,13 +61,17 @@ function ModelerComponent() {
     });
     setInstanceModeler(modeler);
 
-    async function fetchData() {
-      const response = await getInfoDiagram(diagramId);
-      setDiagram(response.data);
-      run(modeler, response.data.xml);
+    const getData = async () => {
+      try {
+        const response = await getInfoDiagram(diagramId);
+        setDiagram(response.data);
+        run(modeler, response.data.xml);
+      } catch (error) {
+        // console.log(error);
+      }
     }
 
-    fetchData();
+    getData();
   }, [])
 
   return (
@@ -78,9 +81,9 @@ function ModelerComponent() {
         {/* Options diagram */}
         <div className='d-flex justify-content-between info py-2 px-3'>
           {/* Name and edit */}
-          <div className='d-flex'>
+          <div className='d-flex alig-items-center'>
             <h3>{diagram.name}</h3>
-            <button className='btn btn-white rounded-circle ms-1' data-bs-toggle="modal" data-bs-target="#modalDiagram">
+            <button className='btn border border-white rounded-circle ms-1' data-bs-toggle="modal" data-bs-target="#modalDiagram">
               <i className="bi bi-pencil"></i>
             </button>
           </div>
