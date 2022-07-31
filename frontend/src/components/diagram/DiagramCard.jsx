@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import diagrama from "../../assets/diagrama-de-flujo.png"
 import * as DiagramService from "../../service/DiagramService"
 import { Link } from 'react-router-dom';
@@ -10,10 +10,6 @@ import Alert from '../Alert';
 function DiagramCard({ diagram, listDiagrams }) {
     const [alertMessage, setAlertMessage] = useState('');
     const [alertElement] = useState(React.createRef());
-    const style = {
-        width: '12rem',
-        // height: '14rem'
-    }
 
     const handleDelete = async (diagramId) => {
         try {
@@ -29,35 +25,31 @@ function DiagramCard({ diagram, listDiagrams }) {
         }
     }
 
-
-
     return (
         <>
-            <div className="m-2 card" style={style}>
+            <div className="m-2 card card_diagram">
                 <img src={diagrama} className="card-img-top" alt="Diagram" />
                 <div className="card-body">
-                    <h5 className="card-title">{diagram.name}</h5>
-                    <p className="card-text">{diagram.description}</p>
+                    <h5 className="card-title truncated_text">{diagram.name}</h5>
+                    <p className="card-text truncated_text">{diagram.description}</p>
                     <div className="row">
                         <hr />
                         <div className="col-sm-6 mx-3">
                             <div className="row">
                                 <Link className="btn btn-primary" to={`/diagram/design/${diagram.id}`}>Open</Link>
-                                {/* <button className="btn btn-primary">Open</button> */}
                             </div>
                         </div>
                         <div className="col-sm-2">
                             <button className="btn btn-danger fw-bold" data-bs-toggle="modal" data-bs-target={`#diagram${diagram.id}`}>
                                 X
                             </button>
-
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             {/* Modal delete*/}
-            <div className="modal fade" id={`diagram${diagram.id}`}  aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal fade" id={`diagram${diagram.id}`} aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">

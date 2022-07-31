@@ -12,6 +12,7 @@ import ModelerComponent from './components/diagram/ModelerComponent';
 import reportWebVitals from './reportWebVitals';
 import RequireAuth from './components/RequireAuth';
 import DiagramsCardList from './components/diagram/DiagramsCardList';
+import Home from './components/Home';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -25,7 +26,7 @@ root.render(
       <Route exact path="/register" element={<Register />}></Route>
 
       {/* User */}
-      <Route exact path="/home" element={<RequireAuth><ModelerComponent /></RequireAuth>}></Route>
+      <Route exact path="/" element={<RequireAuth><Home /></RequireAuth>}></Route>
       <Route exact path="/profile" element={<RequireAuth><Profile /></RequireAuth>}></Route>
 
       {/* EBPM */}

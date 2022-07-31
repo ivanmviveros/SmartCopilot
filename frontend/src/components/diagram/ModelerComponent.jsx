@@ -11,6 +11,7 @@ import Alert from '../Alert';
 
 function ModelerComponent() {
   const { diagramId } = useParams();
+  const userId = sessionStorage.getItem('userId');
   const [instanceModeler, setInstanceModeler] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
   const [alertElement] = useState(React.createRef());
@@ -35,6 +36,7 @@ function ModelerComponent() {
         name: diagram.name,
         description: diagram.description,
         xml: data.xml,
+        user_id: userId
       }
       await updateDiagram(formData, diagramId);
       setAlertMessage('Guardado exitosamente');

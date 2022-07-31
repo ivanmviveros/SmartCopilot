@@ -22,8 +22,8 @@ function DiagramsCardList() {
     const getData = async () => {
         try {
             const res = await DiagramService.listDiagram(userId)
-            const data = await res.json()
-            setData(data.data)
+            setData(res.data)
+            console.log(data);
             // console.log(data)
         } catch (error) {
             console.log(error)
@@ -48,7 +48,7 @@ function DiagramsCardList() {
             const diagram = await DiagramService.createDiagram(formData);
             navigate(`/diagram/design/${diagram.id}`);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
 
@@ -78,14 +78,14 @@ function DiagramsCardList() {
                 {data.length > 0 ?
                     (
                         data.map(
-                            element =>
-                                <DiagramCard key={element.id} diagram={element} listDiagrams={getData} />
+                            (element, i) =>
+                                <DiagramCard key={i} diagram={element} listDiagrams={getData} />
                         ))
 
                     : (<h5 className="fst-italic fw-lighte">There is nothing to show</h5>)
                 }
             </div>
-            
+
 
             <ModalDiagram mode='Create' handle={handleChange} createNewDiagram={createNewDiagram} />
         </>

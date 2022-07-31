@@ -9,6 +9,7 @@ from django.db.models import Model
 from rest_framework.serializers import Serializer
 import datetime
 
+
 class Crud():
     """Manages the standard functions for crud in modules"""
 
@@ -23,7 +24,7 @@ class Crud():
             data_serializer = self.serializer_class(model_obj, data=data)
         else:
             data_serializer = self.serializer_class(data=data)
-            
+
         if data_serializer.is_valid():
             model_obj = data_serializer.save()
             return {"success": True, "id": model_obj.pk}, status.HTTP_201_CREATED
@@ -33,7 +34,8 @@ class Crud():
 
     def create(self, request):
         """Tries to create a row in the database and returns the result"""
-        data = self.set_date(request.data.copy(), ['creation_date', 'update_date'])
+        data = self.set_date(request.data.copy(), [
+                             'creation_date', 'update_date'])
         answer, answer_status = self.save_instance(data)
         return Response(answer, status=answer_status, content_type='application/json')
 
@@ -59,7 +61,8 @@ class Crud():
 
     def list(self, request, userId):
         """ Returns a JSON response containing registered users"""
-        queryset = self.model_class.objects.filter(user_id=userId)
+        queryset = self.model_class.objects.filter(
+            user_id=userId).order_by('id')
         result = self.serializer_class(queryset, many=True)
 
         data = {
@@ -69,9 +72,9 @@ class Crud():
         return Response(data, status=status.HTTP_200_OK)
 
     def update(self, request, identifier):
-        """Tries to update a row in the db and returns the result"""    
+        """Tries to update a row in the db and returns the result"""
         data = self.set_date(request.data.copy(), ['update_date'])
-        answer, answer_status =  self.save_instance(data, identifier)
+        answer, answer_status = self.save_instance(data, identifier)
         return Response(answer, status=answer_status)
 
     def delete(self, identifier, message):
@@ -95,7 +98,7 @@ class Crud():
     def set_date(data, attributes):
         """Return data with creation date or/and update date"""
         for attribute in attributes:
-            data[attribute] = datetime.datetime.now();
+            data[attribute] = datetime.datetime.now()
         return data
 
     @staticmethod

@@ -34,3 +34,8 @@ code {
 #helper-svg {
   display: none;
 }
+
+/* Card diagram */
+.card_diagram {
+  width: 12rem;
+}
