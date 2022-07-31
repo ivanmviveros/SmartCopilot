@@ -16,8 +16,8 @@ export const createDiagram = async (data) => {
     }).then(response => response.json())
 }
 
-export const listDiagram = async () => {
-    return await fetch(`${API_URL}/diagrams/list/`, {
+export const listDiagram = async (userId) => {
+    return await fetch(`${API_URL}/diagrams/list/${userId}`, {
         method: "GET",
     })
 }

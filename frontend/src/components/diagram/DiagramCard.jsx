@@ -1,22 +1,38 @@
+import React, { useState } from 'react';
 import diagrama from "../../assets/diagrama-de-flujo.png"
 import * as DiagramService from "../../service/DiagramService"
 import { Link } from 'react-router-dom';
+import { Toast } from 'bootstrap';
 
+//Components
+import Alert from '../Alert';
 
 function DiagramCard({ diagram, listDiagrams }) {
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertElement] = useState(React.createRef());
     const style = {
         width: '12rem',
         // height: '14rem'
     }
 
     const handleDelete = async (diagramId) => {
-        await DiagramService.deleteDiagram(diagramId)
-        listDiagrams()
+        try{
+            await DiagramService.deleteDiagram(diagramId)
+            listDiagrams()
+            setAlertMessage('Eliminado exitosamente');
+            const toast = new Toast(alertElement.current);
+            toast.show();
+        }catch(error){
+            setAlertMessage('Se produjo un error al eliminar');
+            const toast = new Toast(alertElement.current);
+            toast.show();
+        }
     }
 
 
     return (
-        <div className="card" style={style}>
+        <>
+        <div className="m-2 card" style={style}>
             <img src={diagrama} className="card-img-top" alt="Diagram" />
             <div className="card-body">
                 <h5 className="card-title">{diagram.name}</h5>
@@ -34,6 +50,11 @@ function DiagramCard({ diagram, listDiagrams }) {
                             X
                         </button>
 
+                    </div>
+                </div>
+            </div>
+        </div>
+        
                         {/* Modal delete*/}
                         <div className="modal fade" id="confirmDelete" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div className="modal-dialog">
@@ -53,10 +74,8 @@ function DiagramCard({ diagram, listDiagrams }) {
                             </div>
                         </div>
                         {/* Modal-end */}
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Alert message={alertMessage} alertElement={alertElement} />
+        </>
     )
 }
 export default DiagramCard;

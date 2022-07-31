@@ -20,6 +20,7 @@ function Login() {
             const cred = await res.json()
             if (cred.access_token) {
                 sessionStorage.setItem('userToken', cred.access_token)
+                sessionStorage.setItem('userId', cred.user.id)
                 navigate('/profile')
             } else {
                 navigate('/login')

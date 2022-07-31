@@ -1,7 +1,6 @@
 import Modeler from 'bpmn-js/lib/Modeler';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { API_URL } from '../../utils';
 import { getDiagram as getInfoDiagram, updateDiagram } from '../../service/DiagramService';
 import { Toast } from 'bootstrap';
 
@@ -35,7 +34,7 @@ function ModelerComponent() {
       const formData = {
         name: diagram.name,
         description: diagram.description,
-        xml: data.xml
+        xml: data.xml,
       }
       await updateDiagram(formData, diagramId);
       setAlertMessage('Guardado exitosamente');

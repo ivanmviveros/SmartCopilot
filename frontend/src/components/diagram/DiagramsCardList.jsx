@@ -6,10 +6,13 @@ import NavBar from "../NavBar";
 
 function DiagramsCardList(){
 const [data, setData] = useState([{}])
+const userId = sessionStorage.getItem('userId')
+
+
 
 const getData = async () => {
     try {
-       const res =  await DiagramService.listDiagram()
+       const res =  await DiagramService.listDiagram(userId)
        const data = await res.json()
        setData(data.data)
        console.log(data)
@@ -30,7 +33,7 @@ return (
         <h5>Do you want create something?</h5>
         <button className="btn btn-success">+ Create New Diagram</button>
     </div>
-    <div className="m-4">
+    <div className="m-4 row">
 
         {data.length>0?
         (
