@@ -1,5 +1,7 @@
 import diagrama from "../../assets/diagrama-de-flujo.png"
 import * as DiagramService from "../../service/DiagramService"
+import { Link } from 'react-router-dom';
+
 
 function DiagramCard({ diagram, listDiagrams }) {
     const style = {
@@ -23,7 +25,8 @@ function DiagramCard({ diagram, listDiagrams }) {
                     <hr />
                     <div className="col-sm-6 mx-3">
                         <div className="row">
-                            <button className="btn btn-primary">Open</button>
+                            <Link className="btn btn-primary" to={`/diagram/design/${diagram.id}`}>Open</Link>
+                            {/* <button className="btn btn-primary">Open</button> */}
                         </div>
                     </div>
                     <div className="col-sm-2">
