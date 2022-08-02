@@ -1,0 +1,43 @@
+{
+    "name": "UserHistory",
+    "uri": "",
+    "prefix": "uh",
+    "xml": {
+      "tagAlias": "UserHistory"
+    },
+    "types": [
+        {
+            "name": "props",
+            "superClass":[ "Element"],
+            "properties":[
+                {
+                    "name": "title",
+                    "isAttr": true,
+                    "type": "String"
+                },
+                {
+                    "name": "description",
+                    "isAttr": true,
+                    "type": "String" 
+                },
+                {
+                    "name": "estimatedTime",
+                    "isAttr": true,
+                    "type": "Integer"
+                },
+                {
+                    "name": "priority",
+                    "isAttr": true,
+                    "type": "Integer"
+                },
+                {
+                    "name": "dependencies",
+                    "isAttr": true,
+                    "type": "String"
+                }
+            ]
+        }
+    ],
+    "emumerations": [],
+    "associations": []
+}

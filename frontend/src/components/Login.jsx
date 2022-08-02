@@ -18,6 +18,7 @@ function Login() {
         try {
             const res = await UserService.login(data)
             const cred = await res.json()
+            console.log(cred)
             if (cred.access_token) {
                 sessionStorage.setItem('userToken', cred.access_token)
                 sessionStorage.setItem('userId', cred.user.id)
