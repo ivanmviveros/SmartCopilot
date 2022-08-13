@@ -11,11 +11,15 @@ import {
   getRoundRectPath
 } from 'bpmn-js/lib/draw/BpmnRenderUtil';
 
-import { is } from 'bpmn-js/lib/util/ModelUtil';
-import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
+import {
+  is
+} from 'bpmn-js/lib/util/ModelUtil';
+import {
+  isAny
+} from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
 
 const HIGH_PRIORITY = 1500,
-      TASK_BORDER_RADIUS = 2;
+  TASK_BORDER_RADIUS = 2;
 
 
 export default class CustomRenderer extends BaseRenderer {
@@ -28,7 +32,7 @@ export default class CustomRenderer extends BaseRenderer {
   canRender(element) {
 
     // only render tasks and events (ignore labels)
-    return isAny(element, [ 'bpmn:ServiceTask', 'bpmn:Event' ]) && !element.labelTarget;
+    return isAny(element, ['bpmn:ServiceTask', 'bpmn:Event']) && !element.labelTarget;
   }
 
   drawShape(parentNode, element) {
@@ -62,7 +66,7 @@ export default class CustomRenderer extends BaseRenderer {
   }
 }
 
-CustomRenderer.$inject = [ 'eventBus', 'bpmnRenderer' ];
+CustomRenderer.$inject = ['eventBus', 'bpmnRenderer'];
 
 // helpers //////////
 

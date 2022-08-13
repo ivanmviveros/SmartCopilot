@@ -3,7 +3,7 @@ import React from 'react';
 function Alert(props) {
     return (
         <div className="toast-container position-fixed bottom-0 end-0 p-3">
-            <div className="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" ref={props.alertElement}>
+            <div className="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" ref={props.refAlertElement}>
                 <div className="d-flex">
                     <div className="toast-body">
                         {props.message}

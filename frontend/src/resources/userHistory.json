@@ -1,43 +1,38 @@
 {
     "name": "UserHistory",
-    "uri": "",
+    "uri": "http://uh",
     "prefix": "uh",
     "xml": {
-      "tagAlias": "UserHistory"
+        "tagAlias": "UserHistory"
     },
-    "types": [
-        {
-            "name": "props",
-            "superClass":[ "Element"],
-            "properties":[
-                {
-                    "name": "title",
-                    "isAttr": true,
-                    "type": "String"
-                },
-                {
-                    "name": "description",
-                    "isAttr": true,
-                    "type": "String" 
-                },
-                {
-                    "name": "estimatedTime",
-                    "isAttr": true,
-                    "type": "Integer"
-                },
-                {
-                    "name": "priority",
-                    "isAttr": true,
-                    "type": "Integer"
-                },
-                {
-                    "name": "dependencies",
-                    "isAttr": true,
-                    "type": "String"
-                }
-            ]
-        }
-    ],
+    "types": [{
+        "name": "props",
+        "extends": [
+            "bpmn:Task"
+        ],
+        "superClass": ["Element"],
+        "properties": [{
+                "name": "estimatedTime",
+                "isAttr": true,
+                "type": "Integer"
+            },
+            {
+                "name": "priority",
+                "isAttr": true,
+                "type": "Integer"
+            },
+            {
+                "name": "dependencies",
+                "isAttr": true,
+                "type": "String"
+            },
+            {
+                "name": "description",
+                "isAttr": true,
+                "type": "String"
+            }
+        ]
+    }],
     "emumerations": [],
     "associations": []
 }
