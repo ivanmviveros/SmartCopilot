@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 
 function ModalPropertiesPanel(props) {
+    let arrDependecies = []
     const [userHistory, setUserHistory] = useState({
         'uh:name': '',
         'uh:title': '',
@@ -34,7 +35,6 @@ function ModalPropertiesPanel(props) {
             [name]: value
         }))
 
-        console.log(props.selectedElement.businessObject.get('uh:description'))
     }
 
     const createProperties = (element, type) => {
@@ -42,6 +42,7 @@ function ModalPropertiesPanel(props) {
         const propertiesElement = element.businessObject.$model.getTypeDescriptor(type).properties;
 
         properties['uh:name'] = element.businessObject.name || '';
+        properties['uh:dependeces'] = "";
         for (let i = 0; i < propertiesElement.length; i++) {
             properties[propertiesElement[i].name] = element.businessObject.get(propertiesElement[i].name) || '';
         };
@@ -50,15 +51,34 @@ function ModalPropertiesPanel(props) {
     }
 
     const createDependeces = () => {
-        const incoming = props.selectedElement.incoming;
+        const modeling = props.modeler.get('modeling');
+        iterElement(props.selectedElement)
+        modeling.updateProperties(props.selectedElement, {
+            'uh:dependecies': arrDependecies
+        });
+        setUserHistory((prevState) => ({
+            ...prevState,
+            'uh:dependencies': arrDependecies
+        }))
 
-        console.log(props.selectedElement)
+        console.log(arrDependecies)
+    }
+
+    const iterElement = (actualElement) => {
+        console.log(actualElement.incoming)
+        actualElement.incoming.forEach(element => {
+            if (is(element.source, 'bpmn:Task')) {
+                arrDependecies.push(element.source.businessObject.name)
+            } else {
+                iterElement(element.source)
+            }
+        });
     }
 
     useEffect(() => {
         if (props.selectedElement !== '') {
-            createDependeces()
             setUserHistory(createProperties(props.selectedElement, props.typeElement));
+            createDependeces()
         }
     }, [props.selectedElement]);
 
@@ -87,8 +107,24 @@ function ModalPropertiesPanel(props) {
                                     <input className="form-control" name='uh:priority' value={userHistory['uh:priority']} onChange={updateProperties} />
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Dependencies:</label>
-                                    <p></p>
+
+                                    {userHistory['uh:dependencies'].length > 0 ?
+                                        (
+                                            <div className="div">
+                                                <label className="form-label">Dependecies:</label>
+                                                <ul>
+                                                    {userHistory['uh:dependencies'].map(
+                                                        (element, i) =>
+                                                            <li key={i}>{element}</li>
+                                                    )}
+
+                                                </ul>
+                                            </div>
+                                        )
+
+                                        : ""
+                                    }
+
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label">Description:</label>

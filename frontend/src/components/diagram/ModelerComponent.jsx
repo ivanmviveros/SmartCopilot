@@ -44,7 +44,6 @@ function ModelerComponent() {
 
           if (is(element, 'uh:props')) {
             setSelectedElement(element);
-
             const modalPropertiesPanel = new Modal(refModalPropertiesElement.current, options);
             modalPropertiesPanel.show();
           }

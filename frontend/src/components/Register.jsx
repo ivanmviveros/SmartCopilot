@@ -103,7 +103,7 @@ function Register() {
                                 <h5 className="card-title">Password confirmation</h5>
                             </div>
                             <div className="col ">
-                                <input onChange={handleInputChange} type="text" className="form-control" id="password_confirmation" name="password_confirmation" />
+                                <input onChange={handleInputChange} type="password" className="form-control" id="password_confirmation" name="password_confirmation" />
                                 <small className="text-muted">Please confirm your password</small>
                             </div>
                         </div>
