@@ -1,0 +1,6 @@
+Register,Login,Validate,Reset Password,
+Register,Validate,,,
+Login,Validate,Reset Password,,
+Create Profile,Reset  Password,,,
+Reset Password,Login,Register,Validate,Accept Terms
+Login,Validate,Show Products,,

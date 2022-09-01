@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
+import * as AprioriService from "../../service/AprioriService"
 
 function ModalPropertiesPanel(props) {
     let arrDependecies = []
@@ -61,11 +62,10 @@ function ModalPropertiesPanel(props) {
             'uh:dependencies': arrDependecies
         }))
 
-        console.log(arrDependecies)
     }
 
     const iterElement = (actualElement) => {
-        console.log(actualElement.incoming)
+
         actualElement.incoming.forEach(element => {
             if (is(element.source, 'bpmn:Task')) {
                 arrDependecies.push(element.source.businessObject.name)
@@ -75,10 +75,21 @@ function ModalPropertiesPanel(props) {
         });
     }
 
+    const listRecommendations = async (keyword) => {
+        try {
+            const res = await AprioriService.getRecommendations(keyword)
+            console.log(res)
+        } catch (error) {
+            console.log('no hay recomendaciones');
+
+        }
+    }
+
     useEffect(() => {
         if (props.selectedElement !== '') {
             setUserHistory(createProperties(props.selectedElement, props.typeElement));
             createDependeces()
+            listRecommendations(userHistory['uh:name'])
         }
     }, [props.selectedElement]);
 
@@ -97,6 +108,7 @@ function ModalPropertiesPanel(props) {
                                 <div className="mb-3">
                                     <label className="form-label">Name:</label>
                                     <input className="form-control" name='uh:name' value={userHistory['uh:name']} onChange={updateLabel} />
+                                    <label className="form-label">Recommend next task</label>
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label">Estimated Time:</label>

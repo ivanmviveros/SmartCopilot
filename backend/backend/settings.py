@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'projects',
     'diagrams',
     'users',
+    'association_rules'
 ]
 
 MIDDLEWARE = [

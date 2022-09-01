@@ -6,3 +6,6 @@ pyyaml
 requests
 django-cors-headers
 django-environ
+numpy
+pandas
+apyori
