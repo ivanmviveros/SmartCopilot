@@ -86,8 +86,24 @@ function ModalPropertiesPanel(props) {
         }
     }
 
+    const createElement = (e) => {
+        let nameTask=e.target.innerHTML
+        const modeler = props.modeler
+        const elementFactory = modeler.get('elementFactory'),
+        elementRegistry = modeler.get('elementRegistry'),
+        modeling = modeler.get('modeling');
+
+        const process = elementRegistry.get('Process_1'),
+        startEvent = elementRegistry.get(props.selectedElement.id);
+        const task = elementFactory.createShape({ type: 'bpmn:Task' });
+        task.businessObject.name = nameTask
+        modeling.createShape(task, { x: (props.selectedElement.x+props.selectedElement.width)+140 , y: props.selectedElement.y+40 }, process);
+        modeling.connect(startEvent, task);
+    }
+
     useEffect(() => {
         if (props.selectedElement !== '' && props.modalPropertiesPanel._isShown === true) {
+            console.log(props.selectedElement)
             setUserHistory(createProperties(props.selectedElement, props.typeElement));
             createDependeces();
             listRecommendations(props.selectedElement.businessObject.name);
@@ -122,7 +138,9 @@ function ModalPropertiesPanel(props) {
                                                         <ul>
                                                             {userHistory['uh:recommendations'].map(
                                                                 (element, i) =>
-                                                                    <li key={i}>{element}</li>
+                                                                    <li key={i} className="mt-3">
+                                                                        <button onClick={createElement} className="btn btn-primary">{element}</button>
+                                                                    </li>
                                                             )}
                                                         </ul>
                                                     </div>
