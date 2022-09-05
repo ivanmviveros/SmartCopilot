@@ -3,7 +3,7 @@ import { is } from 'bpmn-js/lib/util/ModelUtil';
 import * as AprioriService from "../../service/AprioriService"
 
 function ModalPropertiesPanel(props) {
-    let arrDependecies = []
+    let arrDependencies = []
     const [userHistory, setUserHistory] = useState({
         'uh:name': '',
         'uh:title': '',
@@ -11,6 +11,7 @@ function ModalPropertiesPanel(props) {
         'uh:priority': '',
         'uh:estimatedTime': '',
         'uh:dependencies': '',
+        'uh:recommendations': [],
     });
 
     const updateLabel = (e) => {
@@ -43,7 +44,7 @@ function ModalPropertiesPanel(props) {
         const propertiesElement = element.businessObject.$model.getTypeDescriptor(type).properties;
 
         properties['uh:name'] = element.businessObject.name || '';
-        properties['uh:dependeces'] = "";
+        properties['uh:dependencies'] = "";
         for (let i = 0; i < propertiesElement.length; i++) {
             properties[propertiesElement[i].name] = element.businessObject.get(propertiesElement[i].name) || '';
         };
@@ -55,20 +56,18 @@ function ModalPropertiesPanel(props) {
         const modeling = props.modeler.get('modeling');
         iterElement(props.selectedElement)
         modeling.updateProperties(props.selectedElement, {
-            'uh:dependecies': arrDependecies
+            'uh:dependencies': arrDependencies
         });
         setUserHistory((prevState) => ({
             ...prevState,
-            'uh:dependencies': arrDependecies
+            'uh:dependencies': arrDependencies
         }))
-
     }
 
     const iterElement = (actualElement) => {
-
         actualElement.incoming.forEach(element => {
             if (is(element.source, 'bpmn:Task')) {
-                arrDependecies.push(element.source.businessObject.name)
+                arrDependencies.push(element.source.businessObject.name)
             } else {
                 iterElement(element.source)
             }
@@ -78,20 +77,22 @@ function ModalPropertiesPanel(props) {
     const listRecommendations = async (keyword) => {
         try {
             const res = await AprioriService.getRecommendations(keyword)
-            console.log(res)
+            setUserHistory((prevState) => ({
+                ...prevState,
+                'uh:recommendations': res.recommendations
+            }))
         } catch (error) {
-            console.log('no hay recomendaciones');
-
+            console.log(error)
         }
     }
 
     useEffect(() => {
-        if (props.selectedElement !== '') {
+        if (props.selectedElement !== '' && props.modalPropertiesPanel._isShown === true) {
             setUserHistory(createProperties(props.selectedElement, props.typeElement));
-            createDependeces()
-            listRecommendations(userHistory['uh:name'])
+            createDependeces();
+            listRecommendations(props.selectedElement.businessObject.name);
         }
-    }, [props.selectedElement]);
+    }, [props.modalPropertiesPanel]);
 
     return (
         <div className="modal fade" id="propertiesPanel" aria-labelledby="tittlePropertiesPanel" aria-hidden="true" ref={props.refModalPropertiesElement}>
@@ -104,45 +105,61 @@ function ModalPropertiesPanel(props) {
                     <div className="modal-body">
                         {
                             is(props.selectedElement, props.typeElement) &&
-                            <div>
-                                <div className="mb-3">
-                                    <label className="form-label">Name:</label>
-                                    <input className="form-control" name='uh:name' value={userHistory['uh:name']} onChange={updateLabel} />
-                                    <label className="form-label">Recommend next task</label>
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label">Estimated Time:</label>
-                                    <input className="form-control" name='uh:estimatedTime' value={userHistory['uh:estimatedTime']} onChange={updateProperties} />
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label">Priority:</label>
-                                    <input className="form-control" name='uh:priority' value={userHistory['uh:priority']} onChange={updateProperties} />
-                                </div>
-                                <div className="mb-3">
+                            (
+                                <div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Name:</label>
+                                        <input className="form-control" name='uh:name' value={userHistory['uh:name']} onChange={updateLabel} />
+                                    </div>
+                                    <div className="mb-3">
+                                        {
+                                            userHistory['uh:recommendations'] !== undefined &&
+                                                typeof userHistory['uh:recommendations'] === 'object' &&
+                                                userHistory['uh:recommendations'].length > 0 ?
+                                                (
+                                                    <div className="div">
+                                                        <label className="form-label">Recommend next task</label>
+                                                        <ul>
+                                                            {userHistory['uh:recommendations'].map(
+                                                                (element, i) =>
+                                                                    <li key={i}>{element}</li>
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                ) : ""
+                                        }
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Estimated Time:</label>
+                                        <input className="form-control" name='uh:estimatedTime' value={userHistory['uh:estimatedTime']} onChange={updateProperties} />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Priority:</label>
+                                        <input className="form-control" name='uh:priority' value={userHistory['uh:priority']} onChange={updateProperties} />
+                                    </div>
+                                    <div className="mb-3">
+                                        {
+                                            userHistory['uh:dependencies'].length > 0 ?
+                                                (
+                                                    <div className="div">
+                                                        <label className="form-label">Dependencies:</label>
+                                                        <ul>
+                                                            {userHistory['uh:dependencies'].map(
+                                                                (element, i) =>
+                                                                    <li key={i}>{element}</li>
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                ) : ""
+                                        }
 
-                                    {userHistory['uh:dependencies'].length > 0 ?
-                                        (
-                                            <div className="div">
-                                                <label className="form-label">Dependecies:</label>
-                                                <ul>
-                                                    {userHistory['uh:dependencies'].map(
-                                                        (element, i) =>
-                                                            <li key={i}>{element}</li>
-                                                    )}
-
-                                                </ul>
-                                            </div>
-                                        )
-
-                                        : ""
-                                    }
-
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Description:</label>
+                                        <textarea className="form-control" rows="5" name='uh:description' value={userHistory['uh:description']} onChange={updateProperties}></textarea>
+                                    </div>
                                 </div>
-                                <div className="mb-3">
-                                    <label className="form-label">Description:</label>
-                                    <textarea className="form-control" rows="5" name='uh:description' value={userHistory['uh:description']} onChange={updateProperties}></textarea>
-                                </div>
-                            </div>
+                            )
                         }
                     </div>
                     <div className="modal-footer">

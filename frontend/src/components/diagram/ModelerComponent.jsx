@@ -27,6 +27,7 @@ function ModelerComponent() {
   const [refModalPropertiesElement] = useState(React.createRef());
   const [selectedElement, setSelectedElement] = useState('');
   const [typeElement] = useState('uh:props');
+  const [modalPropertiesPanel, setModalPropertiesPanel] = useState('');
   const [diagram, setDiagram] = useState({
     name: '',
     description: '',
@@ -44,8 +45,9 @@ function ModelerComponent() {
 
           if (is(element, 'uh:props')) {
             setSelectedElement(element);
-            const modalPropertiesPanel = new Modal(refModalPropertiesElement.current, options);
-            modalPropertiesPanel.show();
+            const modal = new Modal(refModalPropertiesElement.current, options);
+            modal.show();
+            setModalPropertiesPanel(modal);
           }
         });
       })
@@ -133,7 +135,7 @@ function ModelerComponent() {
       </div>
 
       <ModalDiagram mode='Edit' handle={handleChange} name={diagram.name} description={diagram.description} />
-      <ModalPropertiesPanel selectedElement={selectedElement} modeler={instanceModeler} typeElement={typeElement} refModalPropertiesElement={refModalPropertiesElement} />
+      <ModalPropertiesPanel selectedElement={selectedElement} modeler={instanceModeler} typeElement={typeElement} modalPropertiesPanel={modalPropertiesPanel} refModalPropertiesElement={refModalPropertiesElement} />
       <Alert message={alertMessage} refAlertElement={refAlertElement} />
     </>
   )
