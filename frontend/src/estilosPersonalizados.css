@@ -33,3 +33,33 @@ code {
 .card_diagram {
   width: 12rem;
 }
+
+/* Modal Properties Panel */
+.w_with_recom {
+  max-width: 1000px;
+  transition: transform .3s ease-out, max-width 0.1s !important;
+}
+
+.w_without_recom {
+  max-width: 500px;
+  transition: transform .3s ease-out, max-width 0.1s !important;
+}
+
+/* Accordion */
+.accordion-button:focus {
+  box-shadow: none;
+}
+
+.accordion-button {
+  width: calc(100% - 42px);
+}
+
+/* Buttons */
+
+.btn {
+  z-index: 1;
+}
+
+.btn:focus {
+  box-shadow: none;
+}

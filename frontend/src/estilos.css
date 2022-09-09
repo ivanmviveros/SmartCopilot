@@ -3,3 +3,36 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+.rounded_top_right {
+    border-top-right-radius: var(--bs-border-radius)!important;
+}
+
+.rounded_bot_right {
+    border-bottom-right-radius: var(--bs-border-radius)!important;
+}
+
+/* Padding */
+.py-2-1 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.py-2-2 {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.py-2-3 {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+/* Border */
+.border_bold_top {
+    border-top: 3px solid #212529 !important;
+}
+
+.border_bold_bot {
+    border-bottom: 3px solid #212529 !important;
+}

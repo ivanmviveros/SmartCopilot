@@ -23,6 +23,7 @@ function ModelerComponent() {
   const userId = sessionStorage.getItem('userId');
   const [instanceModeler, setInstanceModeler] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('');
   const [refAlertElement] = useState(React.createRef());
   const [refModalPropertiesElement] = useState(React.createRef());
   const [selectedElement, setSelectedElement] = useState('');
@@ -67,10 +68,12 @@ function ModelerComponent() {
       }
       await updateDiagram(formData, diagramId);
       setAlertMessage('Successfully saved');
+      setAlertType('Success');
       const toast = new Toast(refAlertElement.current);
       toast.show();
     } catch (error) {
       setAlertMessage('Something wrong happened');
+      setAlertType('Error');
       const toast = new Toast(refAlertElement.current);
       toast.show();
     }
@@ -136,7 +139,7 @@ function ModelerComponent() {
 
       <ModalDiagram mode='Edit' handle={handleChange} name={diagram.name} description={diagram.description} />
       <ModalPropertiesPanel selectedElement={selectedElement} modeler={instanceModeler} typeElement={typeElement} modalPropertiesPanel={modalPropertiesPanel} refModalPropertiesElement={refModalPropertiesElement} />
-      <Alert message={alertMessage} refAlertElement={refAlertElement} />
+      <Alert type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
     </>
   )
 }
