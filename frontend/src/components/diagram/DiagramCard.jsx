@@ -1,27 +1,20 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import diagrama from "../../assets/diagrama-de-flujo.png"
 import * as DiagramService from "../../service/DiagramService"
 import { Link } from 'react-router-dom';
-import { Toast } from 'bootstrap';
+
 
 //Components
-import Alert from '../Alert';
 
 function DiagramCard({ diagram, listDiagrams }) {
-    const [alertMessage, setAlertMessage] = useState('');
-    const [alertElement] = useState(React.createRef());
+  
 
     const handleDelete = async (diagramId) => {
         try {
             await DiagramService.deleteDiagram(diagramId)
-            setAlertMessage('Eliminado exitosamente');
-            const toast = new Toast(alertElement.current);
-            toast.show();
             await listDiagrams()
         } catch (error) {
-            setAlertMessage('Se produjo un error al eliminar');
-            const toast = new Toast(alertElement.current);
-            toast.show();
+            console.log(error)
         }
     }
 
@@ -67,7 +60,6 @@ function DiagramCard({ diagram, listDiagrams }) {
                 </div>
             </div>
             {/* Modal-end */}
-            <Alert message={alertMessage} alertElement={alertElement} />
         </>
     )
 }

@@ -46,6 +46,7 @@ function DiagramsCardList() {
                 user_id: userId
             }
             const diagram = await DiagramService.createDiagram(formData);
+            console.log(diagram)
             navigate(`/diagram/design/${diagram.id}`);
         } catch (error) {
             // console.log(error);
