@@ -19,7 +19,7 @@ import ModalPropertiesPanel from './ModalPropertiesPanel';
 
 function ModelerComponent() {
   const HIGH_PRIORITY = 1500;
-  const { diagramId } = useParams();
+  const { diagramId, projectId } = useParams();
   const userId = sessionStorage.getItem('userId');
   const [instanceModeler, setInstanceModeler] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
@@ -64,8 +64,8 @@ function ModelerComponent() {
         name: diagram.name,
         description: diagram.description,
         xml: data.xml,
-        user_id: userId,
-        json_user_histories: JSON.stringify(jsonCreate(modeler))
+        // user_id: userId,
+        json_user_histories: jsonCreate(modeler),
       }
       console.log(formData.json_user_histories)
       await updateDiagram(formData, diagramId);

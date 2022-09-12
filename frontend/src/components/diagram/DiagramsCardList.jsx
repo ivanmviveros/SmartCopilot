@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useEffect } from "react";
 import { API_URL } from "../../utils";
 import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
 
 // Components
 import DiagramCard from "./DiagramCard";
@@ -10,18 +11,19 @@ import NavBar from "../NavBar";
 import ModalDiagram from "./ModalDiagram";
 
 function DiagramsCardList() {
+    const { projectId } = useParams();
     let navigate = useNavigate();
     const [data, setData] = useState([{}])
-    const userId = sessionStorage.getItem('userId')
+    // const userId = sessionStorage.getItem('userId')
     const [newDiagram, setNewDiagram] = useState({
         name: '',
         description: '',
-        user_id: '',
+        // user_id: '',
     })
 
     const getData = async () => {
         try {
-            const res = await DiagramService.listDiagram(userId)
+            const res = await DiagramService.listDiagram(projectId)
             setData(res.data)
             console.log(data);
             // console.log(data)
@@ -43,7 +45,10 @@ function DiagramsCardList() {
                 name: newDiagram.name,
                 description: newDiagram.description,
                 xml: xml,
-                user_id: userId
+                // user_id: userId,
+                json_user_histories: {},
+                id_project: projectId,
+                
             }
             const diagram = await DiagramService.createDiagram(formData);
             console.log(diagram)

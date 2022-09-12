@@ -1,8 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class Project(models.Model):
     name = models.TextField()
-    description = models.TextField()
+    user_id = models.ForeignKey(User, null=True,blank=True,on_delete=models.DO_NOTHING)
     creation_date = models.DateTimeField(null=True,blank=True)
     update_date = models.DateTimeField(null=True,blank=True)
 

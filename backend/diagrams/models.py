@@ -6,12 +6,12 @@ from django.contrib.auth.models import User
 
 class Diagram(models.Model):
     """Model to represent a diagram"""
-    user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     name = models.TextField()
     description = models.TextField()
     xml = models.TextField()
     properties = models.TextField(null=True, blank=True)
-    json_user_histories = models.TextField(null=True, blank=True)
+    json_user_histories = models.JSONField(null=True, blank=True)
+    id_project = models.ForeignKey(Project,null=True, blank=True,on_delete=models.CASCADE)
     creation_date = models.DateTimeField(null=True, blank=True)
     update_date = models.DateTimeField(null=True, blank=True)
 
