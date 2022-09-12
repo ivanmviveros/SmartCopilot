@@ -118,7 +118,7 @@ function ModalPropertiesPanel(props) {
 
     return (
         <div className="modal fade" id="propertiesPanel" aria-labelledby="tittlePropertiesPanel" aria-hidden="true" ref={props.refModalPropertiesElement}>
-            <div className={`modal-dialog modal-dialog-centered ${panelRecommendations ? 'w_with_recom' : 'w_without_recom'}`}>
+            <div className={`modal-dialog modal-dialog-centered modal-dialog-scrollable ${panelRecommendations ? 'w_with_recom' : 'w_without_recom'}`}>
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="tittlePropertiesPanel">Properties Panel</h5>

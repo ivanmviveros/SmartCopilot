@@ -15,9 +15,7 @@ function Register() {
 
     const signup = async () => {
         try {
-            const res = await UserService.register(data)
-            const cred = await res.json()
-            // console.log(cred)
+            UserService.register(data)
             navigate('/login')
         } catch (error) {
             // console.log(error)

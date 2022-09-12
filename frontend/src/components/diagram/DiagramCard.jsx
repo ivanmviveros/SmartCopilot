@@ -2,25 +2,39 @@
 import diagrama from "../../assets/diagrama-de-flujo.png"
 import * as DiagramService from "../../service/DiagramService"
 import { Link } from 'react-router-dom';
-
+import React, { useState } from "react";
+import { Toast } from "bootstrap";
 
 //Components
+import Alert from '../Alert';
 
-function DiagramCard({ diagram, listDiagrams }) {
-  
+function DiagramCard({ index, diagram, setDiagramList }) {
+    const [indexDeleteDiagram, setIndexDeleteDiagram] = useState(-1);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertType, setAlertType] = useState('');
+    const [refAlertElement] = useState(React.createRef());
 
-    const handleDelete = async (diagramId) => {
+    const deleteDiagram = async () => {
         try {
-            await DiagramService.deleteDiagram(diagramId)
-            await listDiagrams()
+            DiagramService.deleteDiagram(diagram.id).then(res => {
+                setIndexDeleteDiagram(index)
+
+                setAlertMessage('Successfully removed');
+                setAlertType('Success');
+                const toast = new Toast(refAlertElement.current);
+                toast.show();
+            })
         } catch (error) {
-            console.log(error)
+            setAlertMessage('Something wrong happened');
+            setAlertType('Error');
+            const toast = new Toast(refAlertElement.current);
+            toast.show();
         }
     }
 
     return (
         <>
-            <div className="m-2 card card_diagram">
+            <div className={`m-2 card card_diagram ${indexDeleteDiagram === index ? 'd-none' : ''}`}>
                 <img src={diagrama} className="card-img-top" alt="Diagram" />
                 <div className="card-body">
                     <h5 className="card-title truncated_text">{diagram.name}</h5>
@@ -54,12 +68,14 @@ function DiagramCard({ diagram, listDiagrams }) {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button id="deleteDiagramButton" data-bs-dismiss="modal" onClick={() => diagram.id && handleDelete(diagram.id)} type="button" className="btn btn-danger">Delete</button>
+                            <button id="deleteDiagramButton" data-bs-dismiss="modal" onClick={() => deleteDiagram()} type="button" className="btn btn-danger">Delete</button>
                         </div>
                     </div>
                 </div>
             </div>
             {/* Modal-end */}
+
+            <Alert action={deleteDiagram} type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
         </>
     )
 }

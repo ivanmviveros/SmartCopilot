@@ -3,11 +3,9 @@
 import { useNavigate } from 'react-router-dom';
 
 const LogoutButton = () => {
-  // const { setStateUser } = useContext(UserContext)
   let navigate = useNavigate();
   const logout = (event) => {
     event.preventDefault()
-    // console.log(sessionStorage.getItem("userToken"))
     sessionStorage.clear()
     navigate("/login")
   }

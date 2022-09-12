@@ -8,7 +8,7 @@ import Alert from '../Alert';
 const ListRecommendations = (props) => {
     const [recommendations, setRecommendations] = useState([]);
     const [checkedRecommendations, setCheckedRecommendations] = useState([]);
-    const [indexDeleteTask, setIndexDeleteTask] = useState(0);
+    const [indexDeleteTask, setIndexDeleteTask] = useState(-1);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertType, setAlertType] = useState('');
     const [refAlertElement] = useState(React.createRef());
@@ -55,7 +55,7 @@ const ListRecommendations = (props) => {
             setRecommendations(res.recommendations);
             setCheckedRecommendations(new Array(res.recommendations.length).fill(false))
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
 
@@ -79,8 +79,11 @@ const ListRecommendations = (props) => {
         props.setTasks(prevState => prevState.filter((item, i) => {
             return i !== indexDeleteTask
         }))
+
+        setAlertMessage('Successfully removed');
+        setAlertType('Success');
         const toast = new Toast(refAlertElement.current);
-        toast.hide();
+        toast.show();
     }
 
     useEffect(() => {
@@ -88,7 +91,7 @@ const ListRecommendations = (props) => {
     }, []);
 
     return (
-        <div className='p-3 w-50 border-start'>
+        <div className='p-3 w-50 border-start overflow-auto'>
             <p>Recommendations</p>
             {
                 recommendations.length > 0 ?

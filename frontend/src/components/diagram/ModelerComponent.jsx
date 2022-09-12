@@ -67,7 +67,6 @@ function ModelerComponent() {
         user_id: userId,
         json_user_histories: JSON.stringify(jsonCreate(modeler))
       }
-      console.log(formData.json_user_histories)
       await updateDiagram(formData, diagramId);
       setAlertMessage('Successfully saved');
       setAlertType('Success');
@@ -91,24 +90,24 @@ function ModelerComponent() {
 
   const jsonCreate = (modeler) => {
     let arrUserHistories = []
-  
+
     const arrElements = modeler._definitions.diagrams[0].plane.bpmnElement.flowElements
-    arrElements.forEach((element,index) => {
-      if(element.$type == "bpmn:Task"){
+    arrElements.forEach((element, index) => {
+      if (element.$type === "bpmn:Task") {
         let uh = {
-          'id' : "uh" + index,
-          'name' : element.name? element.name:"",
-          'description' : element.description?element.description:"",
-          'estimatedTime' : element.estimatedTime?element.estimatedTime:"",
-          'priority' : element.priority?element.priority:"",
-          'dependencies': element.dependencies?element.dependencies:""
+          'id': "uh" + index,
+          'name': element.name ? element.name : "",
+          'description': element.description ? element.description : "",
+          'estimatedTime': element.estimatedTime ? element.estimatedTime : "",
+          'priority': element.priority ? element.priority : "",
+          'dependencies': element.dependencies ? element.dependencies : ""
         }
         arrUserHistories.push(uh)
       }
     })
     return {
       diagram: diagramId,
-      userHistories : arrUserHistories
+      userHistories: arrUserHistories
     }
   }
 

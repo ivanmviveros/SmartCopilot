@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useEffect } from "react";
 import { API_URL } from "../../utils";
 import { useNavigate } from 'react-router-dom'
+import { Toast } from "bootstrap";
 
 // Components
 import DiagramCard from "./DiagramCard";
@@ -11,7 +12,7 @@ import ModalDiagram from "./ModalDiagram";
 
 function DiagramsCardList() {
     let navigate = useNavigate();
-    const [data, setData] = useState([{}])
+    const [diagramList, setDiagramList] = useState([{}])
     const userId = sessionStorage.getItem('userId')
     const [newDiagram, setNewDiagram] = useState({
         name: '',
@@ -19,14 +20,12 @@ function DiagramsCardList() {
         user_id: '',
     })
 
-    const getData = async () => {
+    const getDiagramList = async () => {
         try {
             const res = await DiagramService.listDiagram(userId)
-            setData(res.data)
-            console.log(data);
-            // console.log(data)
+            setDiagramList(res.data)
         } catch (error) {
-            console.log(error)
+            // console.log(error)
         }
     }
 
@@ -46,7 +45,6 @@ function DiagramsCardList() {
                 user_id: userId
             }
             const diagram = await DiagramService.createDiagram(formData);
-            console.log(diagram)
             navigate(`/diagram/design/${diagram.id}`);
         } catch (error) {
             // console.log(error);
@@ -60,9 +58,9 @@ function DiagramsCardList() {
             [name]: value
         }))
     }
-    // console.log(data)
+
     useEffect(() => {
-        getData()
+        getDiagramList()
     }, [])
 
     return (
@@ -75,18 +73,16 @@ function DiagramsCardList() {
                 </button>
             </div>
             <div className="m-4 row">
-
-                {data.length > 0 ?
+                {diagramList.length > 0 ?
                     (
-                        data.map(
+                        diagramList.map(
                             (element, i) =>
-                                <DiagramCard key={i} diagram={element} listDiagrams={getData} />
+                                <DiagramCard key={i} diagram={element} setDiagramList={setDiagramList} index={i} />
                         ))
 
                     : (<h5 className="fst-italic fw-lighte">There is nothing to show</h5>)
                 }
             </div>
-
 
             <ModalDiagram mode='Create' handle={handleChange} createNewDiagram={createNewDiagram} />
         </>
