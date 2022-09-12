@@ -20,8 +20,8 @@ def get(request, diagramId):
     return diagramGet
 
 @api_view(['GET'])
-def list(request, userId):
-    diagramList = crudObject.list(request, userId)
+def list(request, projectId):
+    diagramList = crudObject.list(request, "project", projectId)
     return diagramList
 
 @api_view(['PUT'])

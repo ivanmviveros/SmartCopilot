@@ -12,14 +12,15 @@ export const createDiagram = async (data) => {
             'name': String(data.name),
             'description': String(data.description),
             'xml': String(data.xml),
-            'user_id': String(data.user_id),
-            'json_user_histories': String(data.json_user_histories)
+            // 'user_id': String(data.user_id),
+            'json_user_histories': data.json_user_histories,
+            'id_project': String(data.id_project)
         })
     }).then(response => response.json())
 }
 
-export const listDiagram = async (userId) => {
-    return await fetch(`${API_URL}/diagrams/list/${userId}`, {
+export const listDiagram = async (projectId) => {
+    return await fetch(`${API_URL}/diagrams/list/${projectId}`, {
         method: "GET",
     }).then(response => response.json())
 }
@@ -40,8 +41,9 @@ export const updateDiagram = async (data, diagramId) => {
             'name': String(data.name),
             'description': String(data.description),
             'xml': String(data.xml),
-            'user_id': String(data.user_id),
-            'json_user_histories': String(data.json_user_histories)
+            // 'user_id': String(data.user_id),
+            'json_user_histories': data.json_user_histories
+
         })
     }).then(response => response.json())
 }

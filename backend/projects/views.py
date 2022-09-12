@@ -20,9 +20,9 @@ def get(request, projectId):
     return projectGet
 
 @api_view(['GET'])
-def list(request):
-    projectList = crudObject.list(request)
-    return projectList
+def list(request, userId):
+    projectList = crudObject.list(request, "user", userId)
+    return projectList 
 
 @api_view(['PUT'])
 def update(request, projectId):

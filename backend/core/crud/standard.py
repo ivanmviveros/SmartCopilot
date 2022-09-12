@@ -1,4 +1,5 @@
 """Standard functions for crud"""
+from dataclasses import field
 from typing import Callable
 from django.db.models import query
 from django.db.models.query import QuerySet
@@ -59,11 +60,16 @@ class Crud():
             }
             return Response(data, status=status.HTTP_404_NOT_FOUND)
 
-    def list(self, request, userId):
+    def list(self, request, field_filter, fieldId):
         """ Returns a JSON response containing registered users"""
-        queryset = self.model_class.objects.filter(
-            user_id=userId).order_by('id')
-        result = self.serializer_class(queryset, many=True)
+        if(field_filter == "project"):
+            queryset = self.model_class.objects.filter(
+            id_project=fieldId).order_by('id')
+            result = self.serializer_class(queryset, many=True)
+        else:
+            queryset = self.model_class.objects.filter(
+            user_id=fieldId).order_by('id')
+            result = self.serializer_class(queryset, many=True)
 
         data = {
             'success': True,
