@@ -4,26 +4,30 @@ import { useEffect } from "react";
 import { API_URL } from "../../utils";
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom';
+import { Toast } from "bootstrap";
 
 // Components
 import DiagramCard from "./DiagramCard";
 import NavBar from "../NavBar";
 import ModalDiagram from "./ModalDiagram";
+import Alert from '../Alert';
 
 function DiagramsCardList() {
     const { projectId } = useParams();
     let navigate = useNavigate();
-    const [diagramList, setDiagramList] = useState([{}])
+    const [diagrams, setDiagrams] = useState([{}])
     const [newDiagram, setNewDiagram] = useState({
         name: '',
         description: '',
-        // user_id: '',
     })
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertType, setAlertType] = useState('');
+    const [refAlertElement] = useState(React.createRef());
 
-    const getDiagramList = async () => {
+    const getListDiagrams = async () => {
         try {
             const res = await DiagramService.listDiagram(projectId)
-            setDiagramList(res.data)
+            setDiagrams(res.data)
         } catch (error) {
             // console.log(error)
         }
@@ -42,7 +46,6 @@ function DiagramsCardList() {
                 name: newDiagram.name,
                 description: newDiagram.description,
                 xml: xml,
-                // user_id: userId,
                 json_user_histories: {},
                 id_project: projectId,
 
@@ -62,8 +65,15 @@ function DiagramsCardList() {
         }))
     }
 
+    const showAlert = (type, message) => {
+        setAlertMessage(message);
+        setAlertType(type);
+        const toast = new Toast(refAlertElement.current);
+        toast.show();
+    }
+
     useEffect(() => {
-        getDiagramList()
+        getListDiagrams()
     }, [])
 
     return (
@@ -76,11 +86,11 @@ function DiagramsCardList() {
                 </button>
             </div>
             <div className="m-4 row">
-                {diagramList.length > 0 ?
+                {diagrams.length > 0 ?
                     (
-                        diagramList.map(
+                        diagrams.map(
                             (element, i) =>
-                                <DiagramCard key={i} diagram={element} setDiagramList={setDiagramList} index={i} />
+                                <DiagramCard key={i} index={i} diagram={element} getListDiagrams={getListDiagrams} showAlert={showAlert} />
                         ))
 
                     : (<h5 className="fst-italic fw-lighte">There is nothing to show</h5>)
@@ -88,6 +98,7 @@ function DiagramsCardList() {
             </div>
 
             <ModalDiagram mode='Create' handle={handleChange} createNewDiagram={createNewDiagram} />
+            <Alert type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
         </>
     )
 }

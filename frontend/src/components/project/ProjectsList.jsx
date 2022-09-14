@@ -1,30 +1,32 @@
 import * as ProjectService from "../../service/ProjectService"
 import React, { useState } from 'react';
 import { useEffect } from "react";
-
+import { Toast } from "bootstrap";
 
 // Components
 import NavBar from "../NavBar";
 import Project from "./Project";
 import ModalProject from "./ModalProject";
-
-
+import Alert from "../Alert";
 
 function ProjectsList() {
-    const [data, setData] = useState([{}])
+    const [projects, setProjects] = useState([{}])
     const userId = sessionStorage.getItem('userId')
     const [newProject, setNewProject] = useState({
         name: '',
         user_id: '',
     })
+    const [indexDeleteProject, setIndexDeleteProject] = useState(-1);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertType, setAlertType] = useState('');
+    const [refAlertElement] = useState(React.createRef());
 
-    const getData = async () => {
+    const getListProjects = async () => {
         try {
             const res = await ProjectService.listProject(userId)
-            setData(res.data)
-            // console.log(data)
+            setProjects(res.data)
         } catch (error) {
-            console.log(error)
+            // console.log(error)
         }
     }
 
@@ -34,12 +36,13 @@ function ProjectsList() {
                 name: newProject.name,
                 user_id: userId
             }
-            const project = await ProjectService.createProject(formData);
-            getData()
+            await ProjectService.createProject(formData);
+            getListProjects()
         } catch (error) {
             // console.log(error);
         }
     }
+
     const handleChange = e => {
         const { name, value } = e.target;
         setNewProject((prevState) => ({
@@ -48,26 +51,31 @@ function ProjectsList() {
         }))
     }
 
+    const showAlert = (type, message) => {
+        setAlertMessage(message);
+        setAlertType(type);
+        const toast = new Toast(refAlertElement.current);
+        toast.show();
+    }
+
     useEffect(() => {
-        getData()
-        console.log(data)
+        getListProjects()
     }, [])
     return (
         <>
             <NavBar />
             <div className="m-4 text-center">
-                <h5>
-                    To get started, create a new project.</h5>
-                <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalProject">
+                <h5>To get started, create a new project.</h5>
+                <button onClick={() => setNewProject((prevState) => ({ ...prevState, 'name': '' }))} className="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalProject">
                     <i className="bi bi-plus-lg"></i> New project!
                 </button>
             </div>
             <hr></hr>
             <h3 className="text-center">My Projects</h3>
-            <table className="table container ">
+            <table className="table container">
                 <thead>
                     <tr className="text-center">
-                        <th>id</th>
+                        <th>Id</th>
                         <th>Name</th>
                         <th>Last modification</th>
                         <th>Diagrams</th>
@@ -75,20 +83,25 @@ function ProjectsList() {
                         <th>Delete</th>
                     </tr>
                 </thead>
-                <tbody className="text-center">
-
-                    {data.length > 0 ?
-                    (
-                        data.map(
-                            (element, i) =>
-                                <Project key={i} project={element} listProjects={getData} />
-                        ))
-                    :(<h5 className="fst-italic fw-lighte">There is nothing to show</h5>)
+                <tbody>
+                    {projects.length > 0 ?
+                        (
+                            projects.map(
+                                (element, i) =>
+                                    <Project key={i} index={i} project={element} getListProjects={getListProjects} showAlert={showAlert} />
+                            )
+                        )
+                        : (
+                            <tr>
+                                <td className="fst-italic fw-lighte fs-5 text-center" colSpan={6}>There is nothing to show</td>
+                            </tr>
+                        )
                     }
                 </tbody>
             </table>
 
-            <ModalProject mode='Create' handle={handleChange} createNewProject={createNewProject} />
+            <ModalProject mode='Create' name={newProject.name} handle={handleChange} createNewProject={createNewProject} />
+            <Alert type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
         </>
 
     )

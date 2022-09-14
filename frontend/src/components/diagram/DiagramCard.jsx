@@ -2,39 +2,23 @@
 import diagrama from "../../assets/diagrama-de-flujo.png"
 import * as DiagramService from "../../service/DiagramService"
 import { Link } from 'react-router-dom';
-import React, { useState } from "react";
-import { Toast } from "bootstrap";
+import React from "react";
 
-//Components
-import Alert from '../Alert';
-
-function DiagramCard({ index, diagram, setDiagramList }) {
-    const [indexDeleteDiagram, setIndexDeleteDiagram] = useState(-1);
-    const [alertMessage, setAlertMessage] = useState('');
-    const [alertType, setAlertType] = useState('');
-    const [refAlertElement] = useState(React.createRef());
-
+function DiagramCard({ index, diagram, getListDiagrams, showAlert }) {
     const deleteDiagram = async () => {
         try {
             DiagramService.deleteDiagram(diagram.id).then(res => {
-                setIndexDeleteDiagram(index)
-
-                setAlertMessage('Successfully removed');
-                setAlertType('Success');
-                const toast = new Toast(refAlertElement.current);
-                toast.show();
+                showAlert('Success', 'Successfully removed');
+                getListDiagrams()
             })
         } catch (error) {
-            setAlertMessage('Something wrong happened');
-            setAlertType('Error');
-            const toast = new Toast(refAlertElement.current);
-            toast.show();
+            showAlert('Success', 'Successfully removed');
         }
     }
 
     return (
         <>
-            <div className={`m-2 card card_diagram ${indexDeleteDiagram === index ? 'd-none' : ''}`}>
+            <div className={`m-2 card card_diagram`}>
                 <img src={diagrama} className="card-img-top" alt="Diagram" />
                 <div className="card-body">
                     <h5 className="card-title truncated_text">{diagram.name}</h5>
@@ -74,8 +58,6 @@ function DiagramCard({ index, diagram, setDiagramList }) {
                 </div>
             </div>
             {/* Modal-end */}
-
-            <Alert action={deleteDiagram} type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
         </>
     )
 }

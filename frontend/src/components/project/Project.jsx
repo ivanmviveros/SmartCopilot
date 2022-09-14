@@ -2,17 +2,20 @@ import * as ProjectService from "../../service/ProjectService"
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 
-function Project({ project, listProjects }) {
+function Project({ index, project, getListProjects, showAlert }) {
     const [newProject, setNewProject] = useState({
         name: '',
     })
 
-    const handleDelete = async (projectId) => {
+    const deleteProject = async (projectId) => {
         try {
-            await ProjectService.deleteProject(projectId)
-            await listProjects()
+            ProjectService.deleteProject(projectId).then(res => {
+                showAlert('Success', 'Successfully removed');
+                getListProjects()
+            })
+            // await getListProjects()
         } catch (error) {
-            console.log(error)
+            showAlert('Error', 'Something wrong happened');
         }
     }
 
@@ -21,10 +24,10 @@ function Project({ project, listProjects }) {
             const formData = {
                 name: newProject.name,
             }
-            await ProjectService.updateProject(formData,projectId)
-            await listProjects()
+            await ProjectService.updateProject(formData, projectId)
+            await getListProjects()
         } catch (error) {
-            console.log(error)
+            // console.log(error)
         }
     }
 
@@ -37,27 +40,23 @@ function Project({ project, listProjects }) {
     }
     return (
         <>
-
-            <tr>
-                <td>{project.id}</td>
-                <td>{project.name}</td>
-                <td>{project.update_date}</td>
-                <td>
+            <tr className='text-center'>
+                <td className="align-middle">{index + 1}</td>
+                <td className="align-middle mwpx-500 truncated_text" width={500}>{project.name}</td>
+                <td className="align-middle">{project.update_date}</td>
+                <td className="align-middle">
                     <Link className="btn btn-primary" to={`/diagrams/${project.id}`}><i className="bi bi-eye"></i></Link>
                 </td>
-                <td>
+                <td className="align-middle">
                     <button className="btn btn-success fw-bold" data-bs-toggle="modal" data-bs-target={`#projectUpdate${project.id}`}>
-                    <i className="bi bi-pencil-square"></i>
+                        <i className="bi bi-pencil-square"></i>
                     </button>
                 </td>
-                <td>
+                <td className="align-middle">
                     <button className="btn btn-danger fw-bold" data-bs-toggle="modal" data-bs-target={`#project${project.id}`}>
-                    <i className="bi bi-folder-x"></i>
+                        <i className="bi bi-folder-x"></i>
                     </button>
                 </td>
-              
-
-
             </tr>
 
             {/* Modal delete*/}
@@ -65,15 +64,15 @@ function Project({ project, listProjects }) {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title  text-dark" id="exampleModalLabel">Delete Project</h5>
+                            <h5 className="modal-title text-dark" id="exampleModalLabel">Delete Project</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body text-start">
-                            Are you sure to delete {project.name}?
+                            Are you sure to delete '{project.name}'?
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button id="deleteProjectButton" data-bs-dismiss="modal" onClick={() => project.id && handleDelete(project.id)} type="button" className="btn btn-danger">Delete</button>
+                            <button id="deleteProjectButton" data-bs-dismiss="modal" onClick={() => deleteProject(project.id)} type="button" className="btn btn-danger">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -86,16 +85,16 @@ function Project({ project, listProjects }) {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title  text-dark" id="exampleModalLabel">UpdateProject</h5>
+                            <h5 className="modal-title  text-dark" id="exampleModalLabel">Update Project</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body text-start">
-                            Are you sure to update {project.name}?
-                            <input className="form-control" name='name'  onChange={handleChange} />
+                            <p className="word_break">Are you sure to update '{project.name}'?</p>
+                            <input className="form-control" name='name' onChange={handleChange} />
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button id="deleteProjectButton" data-bs-dismiss="modal" onClick={() => project.id && updateProject(project.id)} type="button" className="btn btn-success">Update</button>
+                            <button id="deleteProjectButton" data-bs-dismiss="modal" onClick={() => updateProject(project.id)} type="button" className="btn btn-success">Update</button>
                         </div>
                     </div>
                 </div>

@@ -4,6 +4,10 @@
     text-overflow: ellipsis;
 }
 
+.word_break {
+    word-break: break-word;
+}
+
 .rounded_top_right {
     border-top-right-radius: var(--bs-border-radius)!important;
 }
@@ -26,6 +30,31 @@
 .py-2-3 {
     padding-top: 14px;
     padding-bottom: 14px;
+}
+
+/* Max width */
+.mw-100 {
+    max-width: 100%;
+}
+
+.mw-75 {
+    max-width: 75%;
+}
+
+.mw-50 {
+    max-width: 50%;
+}
+
+.mw-25 {
+    max-width: 25%;
+}
+
+.mw-0 {
+    max-width: 0%;
+}
+
+.mwpx-500 {
+    max-width: 500px;
 }
 
 /* Border */
