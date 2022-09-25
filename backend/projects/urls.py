@@ -9,4 +9,3 @@ urlpatterns = [
     path('update/<int:projectId>', views.update, name='projectUpdate'),
     path('delete/<int:projectId>', views.delete, name='projectDelete'),
 ]
- 

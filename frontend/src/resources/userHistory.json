@@ -12,22 +12,26 @@
         ],
         "superClass": ["Element"],
         "properties": [{
-                "name": "estimatedTime",
-                "isAttr": true,
-                "type": "Integer"
-            },
-            {
                 "name": "priority",
-                "isAttr": true,
-                "type": "Integer"
-            },
-            {
-                "name": "dependencies",
                 "isAttr": true,
                 "type": "String"
             },
             {
-                "name": "description",
+                "name": "points",
+                "isAttr": true,
+                "type": "Integer"
+            },
+            {
+                "name": "purpose",
+                "isAttr": true,
+                "type": "String"
+            },
+            {
+                "name": "restrictions",
+                "isAttr": true,
+                "type": "String"
+            }, {
+                "name": "acceptanceCriteria",
                 "isAttr": true,
                 "type": "String"
             }

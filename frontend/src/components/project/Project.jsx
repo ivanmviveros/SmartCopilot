@@ -13,7 +13,6 @@ function Project({ index, project, getListProjects, showAlert }) {
                 showAlert('Success', 'Successfully removed');
                 getListProjects()
             })
-            // await getListProjects()
         } catch (error) {
             showAlert('Error', 'Something wrong happened');
         }
@@ -45,7 +44,7 @@ function Project({ index, project, getListProjects, showAlert }) {
                 <td className="align-middle mwpx-500 truncated_text" width={500}>{project.name}</td>
                 <td className="align-middle">{project.update_date}</td>
                 <td className="align-middle">
-                    <Link className="btn btn-primary" to={`/diagrams/${project.id}`}><i className="bi bi-eye"></i></Link>
+                    <Link className="btn btn-primary" to={`/project/${project.id}/diagrams`}><i className="bi bi-eye"></i></Link>
                 </td>
                 <td className="align-middle">
                     <button className="btn btn-success fw-bold" data-bs-toggle="modal" data-bs-target={`#projectUpdate${project.id}`}>
@@ -68,7 +67,7 @@ function Project({ index, project, getListProjects, showAlert }) {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body text-start">
-                            Are you sure to delete '{project.name}'?
+                            <p className="word_break mb-0">Are you sure to delete '{project.name}'?</p>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

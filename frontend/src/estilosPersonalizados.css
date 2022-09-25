@@ -36,12 +36,12 @@ code {
 
 /* Modal Properties Panel */
 .w_with_recom {
-  max-width: 1000px;
+  /* max-width: 1000px; */
   transition: transform .3s ease-out, max-width 0.1s !important;
 }
 
 .w_without_recom {
-  max-width: 500px;
+  /* max-width: 500px; */
   transition: transform .3s ease-out, max-width 0.1s !important;
 }
 
@@ -62,4 +62,39 @@ code {
 
 .btn:focus {
   box-shadow: none;
+}
+
+.task-note {
+  background-color: green;
+  color: White;
+  border-radius: 5px;
+  font-size: 12px;
+  padding: 3px;
+  width: 60px;
+  text-align: center;
+}
+
+.pool-note-error {
+  background-color: #E04B5A;
+  color: White;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 8px;
+  width: 190px;
+  text-align: center;
+}
+
+.task-note-error {
+  background-color: #E04B5A;
+  color: White;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 8px;
+  width: 37px;
+  text-align: center;
+}
+
+/* Table */
+table.table-cursor tbody {
+  cursor: pointer;
 }

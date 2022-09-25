@@ -11,7 +11,7 @@ function ModalDiagram(props) {
                     </div>
                     <div className="modal-body">
                         <div className="mb-3">
-                            <label className="form-label">Name:</label>
+                            <label className="form-label">Name *:</label>
                             <input className="form-control" name='name' value={props.name} onChange={props.handle} />
                         </div>
                         <div className="mb-3">

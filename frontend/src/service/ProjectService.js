@@ -34,10 +34,10 @@ export const updateProject = async (data, projectId) => {
             'Content-Type': 'application/json'
         },
 
-            body: JSON.stringify({
-                'name': String(data.name),
-            })
-     
+        body: JSON.stringify({
+            'name': String(data.name),
+        })
+
     }).then(response => response.json())
 }
 

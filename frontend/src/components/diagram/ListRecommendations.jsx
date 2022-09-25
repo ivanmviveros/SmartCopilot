@@ -142,7 +142,11 @@ const ListRecommendations = (props) => {
                                     </div>
                             )}
                         </div>
-                    ) : ""
+                    ) : (
+                        <div className="alert alert-primary" role="alert">
+                            There are no recommendations
+                        </div>
+                    )
             }
 
             <Alert action={deleteTask} type={alertType} message={alertMessage} refAlertElement={refAlertElement} />

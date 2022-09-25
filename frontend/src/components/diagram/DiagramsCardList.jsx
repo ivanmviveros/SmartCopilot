@@ -51,7 +51,7 @@ function DiagramsCardList() {
 
             }
             const diagram = await DiagramService.createDiagram(formData);
-            navigate(`/diagram/design/${diagram.id}`);
+            navigate(`/project/${projectId}/diagram/${diagram.id}`);
         } catch (error) {
             // console.log(error);
         }
@@ -90,7 +90,7 @@ function DiagramsCardList() {
                     (
                         diagrams.map(
                             (element, i) =>
-                                <DiagramCard key={i} index={i} diagram={element} getListDiagrams={getListDiagrams} showAlert={showAlert} />
+                                <DiagramCard key={i} index={i} diagram={element} getListDiagrams={getListDiagrams} showAlert={showAlert} projectId={projectId} />
                         ))
 
                     : (<h5 className="fst-italic fw-lighte">There is nothing to show</h5>)

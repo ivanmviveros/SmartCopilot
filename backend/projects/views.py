@@ -9,27 +9,33 @@ from .serializers import ProjectSerializer
 
 crudObject = crudObject = Crud(ProjectSerializer, Project)
 
+
 @api_view(['POST'])
 def create(request):
     projectCreate = crudObject.create(request)
     return projectCreate
+
 
 @api_view(['GET'])
 def get(request, projectId):
     projectGet = crudObject.get(request, projectId)
     return projectGet
 
+
 @api_view(['GET'])
 def list(request, userId):
     projectList = crudObject.list(request, "user", userId)
-    return projectList 
+    return projectList
+
 
 @api_view(['PUT'])
 def update(request, projectId):
     projectUpdate = crudObject.update(request, projectId)
     return projectUpdate
 
+
 @api_view(['DELETE'])
 def delete(request, projectId):
-    projectDelete = crudObject.delete(projectId, 'The project has been successfully removed')
+    projectDelete = crudObject.delete(
+        projectId, 'The project has been successfully removed')
     return projectDelete

@@ -31,8 +31,8 @@ root.render(
       <Route exact path="/profile" element={<RequireAuth><Profile /></RequireAuth>}></Route>
 
       {/* EBPM */}
-      <Route exact path="/diagrams/:projectId" element={<RequireAuth><DiagramsCardList /></RequireAuth>}></Route>
-      <Route exact path="/diagram/design/:diagramId" element={<RequireAuth><ModelerComponent /></RequireAuth>}></Route>
+      <Route exact path="/project/:projectId/diagrams" element={<RequireAuth><DiagramsCardList /></RequireAuth>}></Route>
+      <Route exact path="/project/:projectId/diagram/:diagramId" element={<RequireAuth><ModelerComponent /></RequireAuth>}></Route>
       <Route exact path="/projects" element={<RequireAuth><ProjectsList /></RequireAuth>}></Route>
 
     </Routes>

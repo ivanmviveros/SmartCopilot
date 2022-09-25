@@ -4,7 +4,7 @@ import * as DiagramService from "../../service/DiagramService"
 import { Link } from 'react-router-dom';
 import React from "react";
 
-function DiagramCard({ index, diagram, getListDiagrams, showAlert }) {
+function DiagramCard({ index, diagram, getListDiagrams, showAlert, projectId }) {
     const deleteDiagram = async () => {
         try {
             DiagramService.deleteDiagram(diagram.id).then(res => {
@@ -27,7 +27,7 @@ function DiagramCard({ index, diagram, getListDiagrams, showAlert }) {
                         <hr />
                         <div className="col-sm-6 mx-3">
                             <div className="row">
-                                <Link className="btn btn-primary" to={`/diagram/design/${diagram.id}`}>Open</Link>
+                                <Link className="btn btn-primary" to={`/project/${projectId}/diagram/${diagram.id}`}>Open</Link>
                             </div>
                         </div>
                         <div className="col-sm-2">
