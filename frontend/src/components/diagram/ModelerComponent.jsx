@@ -7,7 +7,6 @@ import * as ProjectService from "../../service/ProjectService";
 // BPMN
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
-import customRendererModule from '../../custom';
 import uhExtension from '../../resources/userHistory';
 import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel';
 import { options } from '@bpmn-io/properties-panel/preact';
@@ -18,6 +17,8 @@ import ModalDiagram from './ModalDiagram';
 import Alert from '../Alert';
 import ModalPropertiesPanel from './ModalPropertiesPanel';
 import ModalUserStories from './ModalUserStories';
+import ModalPdf from '../pdfbacklog/ModalPdf';
+
 
 function ModelerComponent() {
   const HIGH_PRIORITY = 1500;
@@ -29,12 +30,16 @@ function ModelerComponent() {
   const [refModalPropertiesElement] = useState(React.createRef());
   const [modalPropertiesPanel, setModalPropertiesPanel] = useState('');
   const [refModalUserStories] = useState(React.createRef());
+  const [refModalPdf] = useState(React.createRef());
   const [modalUserStories, setModalUserStories] = useState('');
+  const [modalPdf, setModalPdf] = useState('');
   const [selectedElement, setSelectedElement] = useState('');
   const [typeElement] = useState('uh:props');
   const [newTask, setNewTask] = useState('');
   const [project, setProject] = useState({})
   const [overlaysError, setOverlaysError] = useState([])
+ 
+
   const [diagram, setDiagram] = useState({
     name: '',
     description: '',
@@ -102,6 +107,7 @@ function ModelerComponent() {
     const invalidParticipants = [];
     const invalidTasks = [];
     var isValid = true;
+    
 
     // Validate
     tasks.forEach(element => {
@@ -208,7 +214,6 @@ function ModelerComponent() {
       }
       arrUserStories.push(uh)
     });
-
     return {
       diagramId: diagramId,
       userStories: arrUserStories
@@ -231,18 +236,22 @@ function ModelerComponent() {
     setModalUserStories(modal);
   }
 
+ const openModalPdf = () => {
+    const modal = new Modal(refModalPdf.current, options);
+    modal.show();
+    setModalPdf(modal);
+  }
   const createDependencies = (selectedElement) => {
     const modeling = instanceModeler.get('modeling');
-    const arrDependencies = iterElement(selectedElement);
+    var arrDependencies = []
+    arrDependencies = iterElement(selectedElement,arrDependencies);
     modeling.updateProperties(selectedElement, {
       'uh:dependencies': arrDependencies
     });
-
     return arrDependencies;
   }
 
-  const iterElement = (actualElement) => {
-    var arrDependencies = [];
+  const iterElement = (actualElement,arrDependencies) => {
     actualElement.incoming.forEach(element => {
       if (is(element.source, 'bpmn:Task')) {
         arrDependencies.push({
@@ -250,10 +259,9 @@ function ModelerComponent() {
           name: element.source.businessObject.name
         })
       } else {
-        iterElement(element.source)
+        iterElement(element.source, arrDependencies)
       }
     });
-
     return arrDependencies;
   }
 
@@ -263,7 +271,6 @@ function ModelerComponent() {
       additionalModules: [
         BpmnPropertiesPanelModule,
         BpmnPropertiesProviderModule,
-        // customRendererModule
       ],
       moddleExtensions: {
         uh: uhExtension
@@ -275,6 +282,7 @@ function ModelerComponent() {
     setInstanceModeler(modeler);
     getProject();
 
+
     const getData = async () => {
       try {
         const response = await getInfoDiagram(diagramId);
@@ -284,6 +292,8 @@ function ModelerComponent() {
         // console.log(error);
       }
     }
+
+
 
     // Events
     const eventBus = modeler.get('eventBus');
@@ -320,7 +330,7 @@ function ModelerComponent() {
               <i className="bi bi-file-earmark-text"></i> View User Stories
             </button>
             {/* Button View US */}
-            <button className="btn btn-success me-3" onClick={() => save(instanceModeler)}>
+            <button className="btn btn-success me-3" onClick={() => openModalPdf()}>
               <i className="bi bi-file-earmark-plus"></i> Create User Stories
             </button>
             {/* Button Save */}
@@ -331,11 +341,13 @@ function ModelerComponent() {
         </div>
 
         {/* EBPM */}
-        <div id="canvas"></div>
+        <div id="canvas">
+        </div>
       </div>
 
       <ModalDiagram mode='Edit' handle={handleChange} name={diagram.name} description={diagram.description} />
       <ModalPropertiesPanel createTagUH={createTagUH} newTask={newTask} setNewTask={setNewTask} selectedElement={selectedElement} createDependencies={createDependencies} modeler={instanceModeler} typeElement={typeElement} modalPropertiesPanel={modalPropertiesPanel} refModalPropertiesElement={refModalPropertiesElement} />
+      <ModalPdf jsonCreate={jsonCreate} createDependencies={createDependencies} modeler={instanceModeler} modalPdf={modalPdf} refModalPdf={refModalPdf}></ModalPdf>
       <ModalUserStories jsonCreate={jsonCreate} createDependencies={createDependencies} modeler={instanceModeler} modalUserStories={modalUserStories} refModalUserStories={refModalUserStories}></ModalUserStories>
       <Alert type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
     </>

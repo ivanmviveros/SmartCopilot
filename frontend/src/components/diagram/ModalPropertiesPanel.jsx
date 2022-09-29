@@ -7,7 +7,7 @@ import ListRecommendations from './ListRecommendations';
 function ModalPropertiesPanel(props) {
     const [tasks, setTasks] = useState([]);
     const [panelRecommendations, setPanelRecommendations] = useState(false);
-    const [contentPriority] = useState(['Baja', 'Media', 'Alta']);
+    const [contentPriority] = useState(['Low', 'Medium', 'High']);
     const [contentPoints] = useState([1, 2, 3, 5, 8, 13, 21]);
     const [userHistory, setUserHistory] = useState({
         'uh:name': '',
@@ -56,7 +56,7 @@ function ModalPropertiesPanel(props) {
         return properties;
     }
 
-    const createDependencies = () => {
+    const addDependencies = () => {
         setUserHistory((prevState) => ({
             ...prevState,
             'uh:dependencies': props.createDependencies(props.selectedElement)
@@ -119,7 +119,7 @@ function ModalPropertiesPanel(props) {
             setTasks([props.selectedElement.businessObject.name]);
             setPanelRecommendations(false);
             setUserHistory(createProperties(props.selectedElement, props.typeElement));
-            createDependencies();
+            addDependencies();
         }
     }, [props.modalPropertiesPanel]);
 
