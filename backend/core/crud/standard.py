@@ -64,11 +64,11 @@ class Crud():
         """ Returns a JSON response containing registered users"""
         if(field_filter == "project"):
             queryset = self.model_class.objects.filter(
-            id_project=fieldId).order_by('id')
+                id_project=fieldId).order_by('id')
             result = self.serializer_class(queryset, many=True)
         else:
             queryset = self.model_class.objects.filter(
-            user_id=fieldId).order_by('id')
+                user_id=fieldId).order_by('id')
             result = self.serializer_class(queryset, many=True)
 
         data = {

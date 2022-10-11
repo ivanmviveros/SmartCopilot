@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getDiagram as getInfoDiagram, updateDiagram } from '../../service/DiagramService';
+import { addRules } from '../../service/AprioriService';
 import { Toast, Modal } from 'bootstrap';
 import * as ProjectService from "../../service/ProjectService";
 
@@ -38,7 +39,7 @@ function ModelerComponent() {
   const [newTask, setNewTask] = useState('');
   const [project, setProject] = useState({})
   const [overlaysError, setOverlaysError] = useState([])
- 
+
 
   const [diagram, setDiagram] = useState({
     name: '',
@@ -87,7 +88,7 @@ function ModelerComponent() {
     // Assign id task
     tasks.forEach((element, i) => {
       modeling.updateProperties(element, {
-        'id': 'SI-' + (i + 1),
+        'id': 'US-' + (i + 1),
       })
       overlays.add(element, {
         position: {
@@ -107,7 +108,6 @@ function ModelerComponent() {
     const invalidParticipants = [];
     const invalidTasks = [];
     var isValid = true;
-    
 
     // Validate
     tasks.forEach(element => {
@@ -130,6 +130,7 @@ function ModelerComponent() {
 
     if (isValid) {
       try {
+        // Update Diagram
         const data = await modeler.saveXML({ format: true });
         const formData = {
           name: diagram.name,
@@ -138,6 +139,15 @@ function ModelerComponent() {
           json_user_histories: jsonCreate(modeler),
         }
         await updateDiagram(formData, diagramId);
+
+        // Add Rules - Association Rules
+        const arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task'));
+        var newRules = []
+        arrElements.forEach(element => {
+          newRules = createAssociationRule(element, element, newRules)
+        })
+        const res = await addRules(newRules)
+
         // Alert
         setAlertMessage('Successfully saved');
         setAlertType('Success');
@@ -180,6 +190,18 @@ function ModelerComponent() {
       })
       setOverlaysError(overlayIds)
     }
+  }
+
+  const createAssociationRule = (element, elementSource, rules) => {
+    element.outgoing.forEach(elementArrow => {
+      if (is(elementArrow.target, 'bpmn:Task')) {
+        rules.push([elementSource.businessObject.name.toLowerCase(), elementArrow.target.businessObject.name.toLowerCase()])
+      } else {
+        createAssociationRule(elementArrow.target, elementSource, rules)
+      }
+    });
+
+    return rules
   }
 
   const handleChange = e => {
@@ -236,7 +258,7 @@ function ModelerComponent() {
     setModalUserStories(modal);
   }
 
- const openModalPdf = () => {
+  const openModalPdf = () => {
     const modal = new Modal(refModalPdf.current, options);
     modal.show();
     setModalPdf(modal);
@@ -244,14 +266,14 @@ function ModelerComponent() {
   const createDependencies = (selectedElement) => {
     const modeling = instanceModeler.get('modeling');
     var arrDependencies = []
-    arrDependencies = iterElement(selectedElement,arrDependencies);
+    arrDependencies = iterElement(selectedElement, arrDependencies);
     modeling.updateProperties(selectedElement, {
       'uh:dependencies': arrDependencies
     });
     return arrDependencies;
   }
 
-  const iterElement = (actualElement,arrDependencies) => {
+  const iterElement = (actualElement, arrDependencies) => {
     actualElement.incoming.forEach(element => {
       if (is(element.source, 'bpmn:Task')) {
         arrDependencies.push({

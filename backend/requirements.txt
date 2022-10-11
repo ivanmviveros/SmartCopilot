@@ -9,3 +9,4 @@ django-environ
 numpy
 pandas
 apyori
+sentence-transformers

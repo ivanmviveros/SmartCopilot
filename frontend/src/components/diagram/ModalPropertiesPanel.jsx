@@ -100,7 +100,7 @@ function ModalPropertiesPanel(props) {
         const arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task'));
 
         modeling.updateProperties(element, {
-            'id': 'SI-' + arrElements.length,
+            'id': 'US-' + arrElements.length,
             'uh:priority': contentPriority[0],
             'uh:points': contentPoints[0]
         })

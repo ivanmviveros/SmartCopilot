@@ -51,7 +51,7 @@ const ListRecommendations = (props) => {
 
     const listRecommendations = async (keyword) => {
         try {
-            const res = await AprioriService.getRecommendations(keyword);
+            const res = await AprioriService.getRecommendations(keyword.toLowerCase());
             setRecommendations(res.recommendations);
             setCheckedRecommendations(new Array(res.recommendations.length).fill(false))
         } catch (error) {

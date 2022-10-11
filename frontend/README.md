@@ -1,4 +1,26 @@
-# Getting Started with Create React App
+## Local development
+
+1. Set up local environment
+
+- Enter the frontend folder with `cd .\frontend\`
+- Create .env file at the project root, the same folder where package.json is located.
+- Add required variables to .env file like the example below, replace urls with bmpnus project host.
+```
+BUILD_PATH = '/usr/local/apache2/htdocs/'
+REACT_APP_API_HOST = 'http://127.0.0.1:8000'
+BROWSER = None
+```
+2. Install dependencies
+
+- Install the dependencies with `npm install`.
+
+3. Start project
+
+- Execute the project with `npm start`.
+
+----
+----
+----
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

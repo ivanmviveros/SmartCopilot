@@ -91,7 +91,7 @@ function ModalUserStories(props) {
                                         <tbody>
                                             <tr>
                                                 <th className="align-middle text-center w-20">Description</th>
-                                                <td className='ps-3'>As a {selectedUserStory.actor.toLowerCase()}, I want to {selectedUserStory.name.toLowerCase()} {selectedUserStory.purpose !== '' ? `to ${selectedUserStory.purpose.toLowerCase()}` : ''}</td>
+                                                <td className='ps-3'>As a {selectedUserStory.actor.toLowerCase()}, I want to {selectedUserStory.name.toLowerCase()} {selectedUserStory.purpose !== '' ? `, so that ${selectedUserStory.purpose.toLowerCase()}` : ''}</td>
                                             </tr>
                                             <tr>
                                                 <th className="align-middle text-center">Actor</th>
