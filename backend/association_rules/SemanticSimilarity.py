@@ -1,12 +1,12 @@
-from sentence_transformers import SentenceTransformer, util
+import os
+from django.conf import settings
+from sentence_transformers import  util
+from django.apps import apps
 
 # Reference - https://towardsdatascience.com/multilingual-text-similarity-matching-using-embedding-f79037459bf2
 
 
 class SemanticSimilarity:
-    model = SentenceTransformer(
-        'paraphrase-multilingual-mpnet-base-v2', device='cpu', cache_folder='/')
-
     def getSimilarity(self, query, corpus, minSimilarity):
         # Corpus with example sentences
         # corpus = [
@@ -24,12 +24,12 @@ class SemanticSimilarity:
         # queries = ['We want fruit', 'I am in need of assistance',
         #            '我是男孩子', 'Qué estás haciendo']
 
-        corpus_embedding = self.model.encode(
+        corpus_embedding = apps.get_app_config('association_rules').get_sentence_transformer_model().encode(
             corpus, convert_to_tensor=True, normalize_embeddings=True)
 
         top_k = min(5, len(corpus))
 
-        query_embedding = self.model.encode(
+        query_embedding = apps.get_app_config('association_rules').get_sentence_transformer_model().encode(
             query, convert_to_tensor=True, normalize_embeddings=True)
         hits = util.semantic_search(
             query_embedding, corpus_embedding, score_function=util.dot_score)

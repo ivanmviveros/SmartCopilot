@@ -13,15 +13,23 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 import environ
 from django.contrib.staticfiles import handlers
+from django.core.exceptions import ImproperlyConfigured
 
 env = environ.Env()
+def get_env(key, default=None):
+    try:
+        return env(key)
+    except ImproperlyConfigured:
+        return os.environ.get(key, default)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-ALLOWED_HOSTS = ['ebpm', 'localhost', '127.0.0.1']
+
+ALLOWED_HOSTS = ['ebpm', 'backend', 'localhost', '127.0.0.1']
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -30,8 +38,6 @@ SECRET_KEY = 'django-insecure-v*gc!$w%0p)q#78s3#d^e6344hps-n$om$v&d2(8q%fxwa&=fw
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -90,11 +96,11 @@ ROOT_URLCONF = 'backend.urls'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_USER'),
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'HOST': env('DATABASE_HOST'),
-        'PORT': env('DATABASE_PORT')
+        'NAME': get_env('DATABASE_NAME'),
+        'USER': get_env('DATABASE_USER'),
+        'PASSWORD': get_env('DATABASE_PASSWORD'),
+        'HOST': get_env('DATABASE_HOST'),
+        'PORT': get_env('DATABASE_PORT')
     }
 }
 
