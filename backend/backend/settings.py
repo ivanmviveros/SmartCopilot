@@ -204,3 +204,5 @@ class CORSStaticFilesHandler(handlers.StaticFilesHandler):
 
 
 handlers.StaticFilesHandler = CORSStaticFilesHandler
+
+SENTENCE_TRANSFORMER_MODEL_NAME = get_env('SENTENCE_TRANSFORMER_MODEL_NAME', "paraphrase-multilingual-mpnet-base-v2")

@@ -16,7 +16,7 @@ class AssociationRulesConfig(AppConfig):
 
         if self._SENTENCE_TRANSFORMER_MODEL is None:
             self._SENTENCE_TRANSFORMER_MODEL = SentenceTransformer(
-                "paraphrase-multilingual-mpnet-base-v2",
+                settings.SENTENCE_TRANSFORMER_MODEL_NAME,
                 device="cpu",
                 cache_folder=os.path.join(settings.BASE_DIR, "cache"),
             )
