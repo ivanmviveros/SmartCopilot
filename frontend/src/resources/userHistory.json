@@ -34,6 +34,10 @@
                 "name": "acceptanceCriteria",
                 "isAttr": true,
                 "type": "String"
+            }, {
+                "name": "smart",
+                "isAttr": true,
+                "type": "Boolean"
             }
         ]
     }],

@@ -1,9 +1,7 @@
 import os
 from django.conf import settings
-from sentence_transformers import  util
+from sentence_transformers import util
 from django.apps import apps
-
-# Reference - https://towardsdatascience.com/multilingual-text-similarity-matching-using-embedding-f79037459bf2
 
 
 class SemanticSimilarity:

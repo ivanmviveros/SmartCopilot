@@ -16,6 +16,8 @@ from django.contrib.staticfiles import handlers
 from django.core.exceptions import ImproperlyConfigured
 
 env = environ.Env()
+
+
 def get_env(key, default=None):
     try:
         return env(key)
@@ -205,4 +207,5 @@ class CORSStaticFilesHandler(handlers.StaticFilesHandler):
 
 handlers.StaticFilesHandler = CORSStaticFilesHandler
 
-SENTENCE_TRANSFORMER_MODEL_NAME = get_env('SENTENCE_TRANSFORMER_MODEL_NAME', "paraphrase-multilingual-mpnet-base-v2")
+SENTENCE_TRANSFORMER_MODEL_NAME = get_env(
+    'SENTENCE_TRANSFORMER_MODEL_NAME', "all-MiniLM-L6-v2")

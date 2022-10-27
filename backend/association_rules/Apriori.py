@@ -1,17 +1,25 @@
 import pandas as pd
 import numpy as np
 from apyori import apriori
+from core.crud.standard import Crud
 from .SemanticSimilarity import SemanticSimilarity
+
+from .models import AssociationRule, BaseGroup, ResultGroup
+from .serializers import AssociationRuleSerializer, BaseGroupSerializer, ResultGroupSerializer
 
 
 class Apriori:
+    crudAssociationRule = Crud(AssociationRuleSerializer, AssociationRule)
+    crudBaseGroup = Crud(BaseGroupSerializer, BaseGroup)
+    crudResultGroup = Crud(ResultGroupSerializer, ResultGroup)
 
-    def recommended(self, rulesUrl, baseGroupsUrl, resultGroupsUrl, key):
-        arrRules = self.formatRules(rulesUrl)
-        [arrBaseGroups, sentenceBaseGroups, numberBaseGroups] = self.formatBaseGroups(
-            baseGroupsUrl)
-        [arrResultGroups, sentenceResultGroups, numberResultGroups] = self.formatResultGroups(
-            resultGroupsUrl)
+    def recommended(self, key):
+        arrRules = AssociationRule.objects.all().values_list(
+            'base_group_id', 'result_group_id')
+        [arrBaseGroups, sentenceBaseGroups,
+            numberBaseGroups] = self.formatBaseGroups()
+        [arrResultGroups, sentenceResultGroups,
+            numberResultGroups] = self.formatResultGroups()
         arrResultGroups = np.array(arrResultGroups)
 
         recommendations = []
@@ -31,23 +39,25 @@ class Apriori:
                         if(len(list(list(results.iloc[i, 2][j][0]))) > 0 and list(list(results.iloc[i, 2][j][0]))[0] == group[1]):
                             index = np.where(arrResultGroups == list(
                                 list(results.iloc[i, 2][j][1]))[0])[0][0]
-                            recommendations.append(
-                                arrResultGroups[index][0].capitalize())
+                            recommendations.append({
+                                'sentence': arrResultGroups[index][1].capitalize(),
+                                'confidence': results.iloc[i, 2][j][2]
+                            })
                         else:
                             pass
 
+                recommendations.sort(key=lambda x: x.get(
+                    'confidence'), reverse=True)
+
         return recommendations
 
-    def add(self, rulesUrl, baseGroupsUrl, resultGroupsUrl, request):
-        arrRules = self.formatRules(rulesUrl)
-        [arrBaseGroups, sentenceBaseGroups, numberBaseGroups] = self.formatBaseGroups(
-            baseGroupsUrl)
-        [arrResultGroups, sentenceResultGroups, numberResultGroups] = self.formatResultGroups(
-            resultGroupsUrl)
+    def add(self, request):
+        [arrBaseGroups, sentenceBaseGroups,
+            numberBaseGroups] = self.formatBaseGroups()
+        [arrResultGroups, sentenceResultGroups,
+            numberResultGroups] = self.formatResultGroups()
         newRules = request.data['rules']
 
-        existNewBaseGroups = False
-        existNewResultGroups = False
         for rule in newRules:
             # Create new base groups and change key per base group
             group = self.searchGroup(
@@ -55,16 +65,30 @@ class Apriori:
             if (group[0] == -3):  # No similar user stories exist
                 nextGroupNumber = max(numberBaseGroups) + 1 \
                     if (len(numberBaseGroups) > 0) else 1
-                arrBaseGroups.extend([[rule[0], 'B-' + str(nextGroupNumber)]])
+
+                newBaseGroup = [['B-' + str(nextGroupNumber), rule[0]]]
+                arrBaseGroups.extend(newBaseGroup)
                 sentenceBaseGroups.extend([rule[0]])
                 numberBaseGroups.extend([nextGroupNumber])
+
+                self.crudBaseGroup.create({
+                    'group_id': newBaseGroup[0][0],
+                    'sentence': newBaseGroup[0][1]
+                })
+
                 rule[0] = str('B-' + str(nextGroupNumber))
-                existNewBaseGroups = True
             elif (group[0] == -1):  # This user story does not exactly exist
-                arrBaseGroups.extend([[rule[0], group[1]]])
+
+                newBaseGroup = [[group[1], rule[0]]]
+                arrBaseGroups.extend(newBaseGroup)
                 sentenceBaseGroups.extend([rule[0]])
+
+                self.crudBaseGroup.create({
+                    'group_id': newBaseGroup[0][0],
+                    'sentence': newBaseGroup[0][1]
+                })
+
                 rule[0] = str(group[1])
-                existNewBaseGroups = True
             elif (group[0] == -2):  # This user story already exists exactly
                 rule[0] = str(group[1])
 
@@ -74,38 +98,36 @@ class Apriori:
             if (group[0] == -3):  # No similar user stories exist
                 nextGroupNumber = max(numberResultGroups) + 1 \
                     if (len(numberResultGroups) > 0) else 1
-                arrResultGroups.extend(
-                    [[rule[1], 'R-' + str(nextGroupNumber)]])
+
+                newResultGroup = [['R-' + str(nextGroupNumber), rule[1]]]
+                arrResultGroups.extend(newResultGroup)
                 sentenceResultGroups.extend([rule[1]])
                 numberResultGroups.extend([nextGroupNumber])
+
+                self.crudResultGroup.create({
+                    'group_id': newResultGroup[0][0],
+                    'sentence': newResultGroup[0][1]
+                })
+
                 rule[1] = str('R-' + str(nextGroupNumber))
-                existNewResultGroups = True
             elif (group[0] == -1):  # This user story does not exactly exist
-                arrResultGroups.extend([[rule[1], group[1]]])
+                newResultGroup = [[group[1], rule[1]]]
+                arrResultGroups.extend(newResultGroup)
                 sentenceResultGroups.extend([rule[1]])
+
+                self.crudResultGroup.create({
+                    'group_id': newResultGroup[0][0],
+                    'sentence': newResultGroup[0][1]
+                })
+
                 rule[1] = str(group[1])
-                existNewResultGroups = True
             elif (group[0] == -2):  # This user story already exists exactly
                 rule[1] = str(group[1])
 
-        # Add base groups in csv
-        if (existNewBaseGroups):
-            baseGroups = pd.DataFrame(arrBaseGroups)
-            baseGroups.to_csv(baseGroupsUrl, index=False,
-                              na_rep='Unknown', header=None)
-
-        # Add result groups in csv
-        if (existNewResultGroups):
-            resultGroups = pd.DataFrame(arrResultGroups)
-            resultGroups.to_csv(resultGroupsUrl, index=False,
-                                na_rep='Unknown', header=None)
-
-        # Add rules in csv
-        if (len(newRules) > 0):
-            arrRules.extend(newRules)
-            arrRules = pd.DataFrame(arrRules)
-            arrRules.to_csv(rulesUrl, index=False,
-                            na_rep='Unknown', header=None)
+            self.crudAssociationRule.create({
+                'base_group_id': rule[0],
+                'result_group_id': rule[1]
+            })
 
         return True
 
@@ -115,58 +137,43 @@ class Apriori:
     def searchGroup(self, groups, key, sentenceGroups):
         if (len(sentenceGroups) > 0):
             similaries = SemanticSimilarity().getSimilarity(
-                key, sentenceGroups, 0.605)
+                key, sentenceGroups, 0.75)  # Percentage of similarity tolerance
             if(len(similaries) > 0):
                 index = sentenceGroups.index(similaries[0][1])
                 if (similaries[0][0] < 1):  # This user story does not exactly exist
-                    return [-1, str(groups[index][1])]
+                    return [-1, str(groups[index][0])]
                 else:  # This user story already exists exactly
-                    return [-2, str(groups[index][1])]
+                    return [-2, str(groups[index][0])]
 
         return [-3]  # No similar user stories exist
 
-    def formatRules(self, url):
+    def formatBaseGroups(self):
         try:
-            rules = pd.read_csv(url, header=None)
-            arrRules = []
-            for i in range(0, rules.shape[0]):
-                arrRules.append([str(rules.values[i, j])
-                                 for j in range(0, 2)])
-
-            return arrRules
-        except:
-            return []
-
-    def formatBaseGroups(self, url):
-        try:
-            baseGroups = pd.read_csv(url, header=None)
-            arrBaseGroups = []
+            arrBaseGroups = BaseGroup.objects.all().values_list(
+                'group_id', 'sentence')
             sentenceBaseGroups = []
             numberBaseGroups = []
-            for i in range(0, baseGroups.shape[0]):
-                arrBaseGroups.append(
-                    [baseGroups.values[i, 0], baseGroups.values[i, 1]])
-                sentenceBaseGroups.append(baseGroups.values[i, 0])
-                numberBaseGroups.append(
-                    int(baseGroups.values[i, 1].split('-')[1]))
 
-            return [arrBaseGroups, sentenceBaseGroups, numberBaseGroups]
+            for i in range(0, len(arrBaseGroups)):
+                sentenceBaseGroups.append(arrBaseGroups[i][1])
+                numberBaseGroups.append(int(arrBaseGroups[i][0].split('-')[1]))
+
+            return [list(arrBaseGroups), sentenceBaseGroups, numberBaseGroups]
         except:
             return [[], [], []]
 
-    def formatResultGroups(self, url):
+    def formatResultGroups(self):
         try:
-            resultGroups = pd.read_csv(url, header=None)
-            arrResultGroups = []
+            arrResultGroups = ResultGroup.objects.all().values_list(
+                'group_id', 'sentence')
             sentenceResultGroups = []
             numberResultGroups = []
-            for i in range(0, resultGroups.shape[0]):
-                arrResultGroups.append(
-                    [resultGroups.values[i, 0], resultGroups.values[i, 1]])
-                sentenceResultGroups.append(resultGroups.values[i, 0])
-                numberResultGroups.append(
-                    int(resultGroups.values[i, 1].split('-')[1]))
 
-            return [arrResultGroups, sentenceResultGroups, numberResultGroups]
+            for i in range(0, len(arrResultGroups)):
+                sentenceResultGroups.append(arrResultGroups[i][1])
+                numberResultGroups.append(
+                    int(arrResultGroups[i][0].split('-')[1]))
+
+            return [list(arrResultGroups), sentenceResultGroups, numberResultGroups]
         except:
             return [[], [], []]

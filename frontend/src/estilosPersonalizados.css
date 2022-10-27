@@ -74,6 +74,18 @@ code {
   text-align: center;
 }
 
+.smart-note {
+  background-color: blueviolet;
+  color: White;
+  border-radius: 5px;
+  font-size: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+}
+
 .pool-note-error {
   background-color: #E04B5A;
   color: White;

@@ -11,6 +11,9 @@ class Diagram(models.Model):
     xml = models.TextField()
     json_user_histories = models.JSONField(null=True, blank=True)
     id_project = models.ForeignKey(
-        Project, null=True, blank=True, on_delete=models.CASCADE)
+        Project, null=True, blank=True, on_delete=models.CASCADE, db_column='id_project')
     creation_date = models.DateTimeField(null=True, blank=True)
     update_date = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'diagrams'

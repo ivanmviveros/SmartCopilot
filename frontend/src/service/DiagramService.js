@@ -12,7 +12,6 @@ export const createDiagram = async (data) => {
             'name': String(data.name),
             'description': String(data.description),
             'xml': String(data.xml),
-            // 'user_id': String(data.user_id),
             'json_user_histories': data.json_user_histories,
             'id_project': String(data.id_project)
         })
@@ -41,7 +40,6 @@ export const updateDiagram = async (data, diagramId) => {
             'name': String(data.name),
             'description': String(data.description),
             'xml': String(data.xml),
-            // 'user_id': String(data.user_id),
             'json_user_histories': data.json_user_histories
 
         })

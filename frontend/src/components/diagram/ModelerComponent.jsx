@@ -39,6 +39,7 @@ function ModelerComponent() {
   const [newTask, setNewTask] = useState('');
   const [project, setProject] = useState({})
   const [overlaysError, setOverlaysError] = useState([])
+  const [overlaysSmart, setOverlaysSmart] = useState([])
 
 
   const [diagram, setDiagram] = useState({
@@ -64,6 +65,7 @@ function ModelerComponent() {
         });
 
         createTagUH(bpmnModeler, 'Initialize Tasks')
+        createTagSmart(bpmnModeler)
       })
     } catch (err) {
       // console.log(err);
@@ -93,11 +95,36 @@ function ModelerComponent() {
       overlays.add(element, {
         position: {
           top: -12,
-          left: -5
+          right: 55
         },
         html: `<div class="task-note">${element.businessObject.id}</div>`
       });
     })
+  }
+
+  const createTagSmart = (bpmnModeler) => {
+    const overlays = bpmnModeler.get('overlays');
+    const elementRegistry = bpmnModeler.get('elementRegistry');
+    const tasks = elementRegistry.filter(element => is(element, 'bpmn:Task') && element.businessObject.get('uh:smart'));
+    const smartTags = []
+    var overlayId
+
+    // Assign id task
+    tasks.forEach((element, i) => {
+      overlayId = overlays.add(element, {
+        position: {
+          bottom: 15,
+          right: 25
+        },
+        html: `<div class="smart-note"><i class="bi bi-cpu"></i></div>`
+      });
+      smartTags.push({
+        overlayId: overlayId,
+        taskId: element.businessObject.id
+      })
+    })
+
+    setOverlaysSmart(smartTags)
   }
 
   const save = async (modeler) => {
@@ -172,7 +199,7 @@ function ModelerComponent() {
         overlayId = overlays.add(element, {
           position: {
             top: -12,
-            left: -5
+            right: 55
           },
           html: `<div class="pool-note-error"><i class="bi bi-exclamation-octagon-fill"></i> The role field is required</div>`
         });
@@ -182,7 +209,7 @@ function ModelerComponent() {
         overlayId = overlays.add(element, {
           position: {
             top: -17,
-            right: 32
+            left: -5
           },
           html: `<div class="task-note-error"><i class="bi bi-exclamation-octagon-fill"></i></div>`
         });
@@ -304,7 +331,6 @@ function ModelerComponent() {
     setInstanceModeler(modeler);
     getProject();
 
-
     const getData = async () => {
       try {
         const response = await getInfoDiagram(diagramId);
@@ -314,8 +340,6 @@ function ModelerComponent() {
         // console.log(error);
       }
     }
-
-
 
     // Events
     const eventBus = modeler.get('eventBus');
@@ -368,7 +392,7 @@ function ModelerComponent() {
       </div>
 
       <ModalDiagram mode='Edit' handle={handleChange} name={diagram.name} description={diagram.description} />
-      <ModalPropertiesPanel createTagUH={createTagUH} newTask={newTask} setNewTask={setNewTask} selectedElement={selectedElement} createDependencies={createDependencies} modeler={instanceModeler} typeElement={typeElement} modalPropertiesPanel={modalPropertiesPanel} refModalPropertiesElement={refModalPropertiesElement} />
+      <ModalPropertiesPanel overlaysSmart={overlaysSmart} setOverlaysSmart={setOverlaysSmart} createTagUH={createTagUH} newTask={newTask} setNewTask={setNewTask} selectedElement={selectedElement} createDependencies={createDependencies} modeler={instanceModeler} typeElement={typeElement} modalPropertiesPanel={modalPropertiesPanel} refModalPropertiesElement={refModalPropertiesElement} />
       <ModalPdf jsonCreate={jsonCreate} createDependencies={createDependencies} modeler={instanceModeler} modalPdf={modalPdf} refModalPdf={refModalPdf}></ModalPdf>
       <ModalUserStories jsonCreate={jsonCreate} createDependencies={createDependencies} modeler={instanceModeler} modalUserStories={modalUserStories} refModalUserStories={refModalUserStories}></ModalUserStories>
       <Alert type={alertType} message={alertMessage} refAlertElement={refAlertElement} />

@@ -45,6 +45,10 @@
     width: 20%;
 }
 
+.w-33 {
+    width: 33.33%;
+}
+
 /* Max width */
 .mw-100 {
     max-width: 100%;
