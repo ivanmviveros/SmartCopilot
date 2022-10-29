@@ -66,6 +66,8 @@ function ModelerComponent() {
 
         createTagUH(bpmnModeler, 'Initialize Tasks')
         createTagSmart(bpmnModeler)
+        applyEvents(bpmnModeler)
+        setInstanceModeler(bpmnModeler)
       })
     } catch (err) {
       // console.log(err);
@@ -314,6 +316,35 @@ function ModelerComponent() {
     return arrDependencies;
   }
 
+  const applyEvents = (modeler) => {
+    const eventBus = modeler.get('eventBus');
+    const modeling = modeler.get('modeling');
+    var idChangeType;
+    eventBus.on('commandStack.shape.create.postExecute', async (e) => {
+      if (is(e.context.shape, 'bpmn:Task')) {
+        setNewTask(e.context.shape);
+      }
+      if (is(e.context.shape, 'bpmn:CallActivity') || is(e.context.shape, 'bpmn:SubProcess')) {
+        idChangeType = e.context.shape.id
+        modeling.updateProperties(e.context.shape, {
+          'id': 'newElement'
+        });
+      }
+    })
+    eventBus.on('commandStack.shape.delete.preExecuted', (e) => {
+      if (is(e.context.shape, 'bpmn:Task')) {
+        modeling.updateProperties(e.context.shape, {
+          'id': idChangeType || 'deleteElement'
+        });
+      }
+    })
+    eventBus.on('commandStack.shape.delete.postExecute', (e) => {
+      if (is(e.context.shape, 'bpmn:Task')) {
+        createTagUH(modeler, 'Remove Task')
+      }
+    })
+  }
+
   useEffect(() => {
     const modeler = new BpmnModeler({
       container: '#canvas',
@@ -328,7 +359,7 @@ function ModelerComponent() {
       //   bindTo: document
       // }
     });
-    setInstanceModeler(modeler);
+    setInstanceModeler(modeler)
     getProject();
 
     const getData = async () => {
@@ -340,19 +371,6 @@ function ModelerComponent() {
         // console.log(error);
       }
     }
-
-    // Events
-    const eventBus = modeler.get('eventBus');
-    eventBus.on('commandStack.shape.create.postExecute', (e) => {
-      if (is(e.context.shape, 'bpmn:Task')) {
-        setNewTask(e.context.shape);
-      }
-    })
-    eventBus.on('commandStack.shape.delete.postExecute', (e) => {
-      if (is(e.context.shape, 'bpmn:Task')) {
-        createTagUH(modeler, 'Remove Task')
-      }
-    })
 
     getData();
   }, [])
