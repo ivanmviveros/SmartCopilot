@@ -26,7 +26,7 @@ class Apriori:
 
         if (len(arrRules) > 0):
             # Apply association rules
-            rules = apriori(arrRules, min_support=0.02,
+            rules = apriori(arrRules, min_support=0.002,
                             min_confidence=0.3, min_lift=1.0001, min_length=2)
             results = list(rules)
             results = pd.DataFrame(results)
@@ -137,10 +137,10 @@ class Apriori:
     def searchGroup(self, groups, key, sentenceGroups):
         if (len(sentenceGroups) > 0):
             similaries = SemanticSimilarity().getSimilarity(
-                key, sentenceGroups, 0.75)  # Percentage of similarity tolerance
+                key, sentenceGroups, 0.83)  # Percentage of similarity tolerance
             if(len(similaries) > 0):
-                index = sentenceGroups.index(similaries[0][1])
-                if (similaries[0][0] < 1):  # This user story does not exactly exist
+                index = sentenceGroups.index(similaries[1])
+                if (similaries[0] < 1):  # This user story does not exactly exist
                     return [-1, str(groups[index][0])]
                 else:  # This user story already exists exactly
                     return [-2, str(groups[index][0])]
