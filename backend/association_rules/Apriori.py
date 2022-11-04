@@ -137,7 +137,7 @@ class Apriori:
     def searchGroup(self, groups, key, sentenceGroups):
         if (len(sentenceGroups) > 0):
             similaries = SemanticSimilarity().getSimilarity(
-                key, sentenceGroups, 0.83)  # Percentage of similarity tolerance
+                key, sentenceGroups, 0.75)  # Percentage of similarity tolerance
             if(len(similaries) > 0):
                 index = sentenceGroups.index(similaries[1])
                 if (similaries[0] < 1):  # This user story does not exactly exist
