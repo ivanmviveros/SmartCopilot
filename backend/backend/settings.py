@@ -208,4 +208,5 @@ class CORSStaticFilesHandler(handlers.StaticFilesHandler):
 handlers.StaticFilesHandler = CORSStaticFilesHandler
 
 SENTENCE_TRANSFORMER_MODEL_NAME = get_env(
-    'SENTENCE_TRANSFORMER_MODEL_NAME', "all-MiniLM-L6-v2")
+    'SENTENCE_TRANSFORMER_MODEL_NAME', "en_core_web_md"
+)
