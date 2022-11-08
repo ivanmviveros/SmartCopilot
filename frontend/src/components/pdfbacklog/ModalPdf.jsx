@@ -18,15 +18,18 @@ function ModalPdf(props) {
 
     useEffect(() => {
         if (props.modalPdf._isShown === true) {
-            const ListUserStories = props.jsonCreate(props.modeler).userStories;
+            const ListUserStories = props.jsonCreate().userStories;
             setUserStories(ListUserStories);
 
             ListUserStories.map((e) => {
-                let arrDependencies = props.createDependencies(e.element)
-                if (arrDependencies.length > 0) {
+                if (e.dependencies.length > 0) {
                     let arr = []
-                    arrDependencies.forEach(element => {
-                        arr.push(`${element['id']} ${element['name']}, `)
+                    e.dependencies.forEach((element, i) => {
+                        if (i === e.dependencies.length - 1) {
+                            arr.push(`${element['id']} ${element['name']}.`)
+                        } else {
+                            arr.push(`${element['id']} ${element['name']}, `)
+                        }
                     })
                     e.dependencies = arr
                 } else {
@@ -35,6 +38,7 @@ function ModalPdf(props) {
             })
         }
     }, [props.modalPdf]);
+
     return (
         <div className="modal fade" id="modalPdf" aria-labelledby="tittleUserStories" aria-hidden="true" ref={props.refModalPdf}>
             <div className="modal-dialog modal-fullscreen">

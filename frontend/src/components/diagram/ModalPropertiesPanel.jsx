@@ -9,6 +9,7 @@ function ModalPropertiesPanel(props) {
     const [panelRecommendations, setPanelRecommendations] = useState(false);
     const [contentPriority] = useState(['Low', 'Medium', 'High']);
     const [contentPoints] = useState([1, 2, 3, 5, 8, 13, 21]);
+    // const [overlaySmart, setOverlaySmart] = useState(null);
     const [userHistory, setUserHistory] = useState({
         'uh:name': '',
         'uh:priority': '',
@@ -16,8 +17,21 @@ function ModalPropertiesPanel(props) {
         'uh:purpose': '',
         'uh:restrictions': '',
         'uh:acceptanceCriteria': '',
+        'uh:smart': false,
         'uh:dependencies': [],
     });
+
+    const handleOnChangeCheck = (name) => {
+        const modeling = props.modeler.get('modeling');
+
+        modeling.updateProperties(props.selectedElement, {
+            [name]: !userHistory[name]
+        });
+        setUserHistory((prevState) => ({
+            ...prevState,
+            [name]: !userHistory[name]
+        }))
+    }
 
     const updateLabel = (e) => {
         const { name, value } = e.target;
@@ -48,7 +62,7 @@ function ModalPropertiesPanel(props) {
         const propertiesElement = element.businessObject.$model.getTypeDescriptor(type).properties;
 
         for (let i = 0; i < propertiesElement.length; i++) {
-            properties[propertiesElement[i].name] = element.businessObject.get(propertiesElement[i].name) || '';
+            properties[propertiesElement[i].name] = element.businessObject.get(propertiesElement[i].name) !== undefined ? element.businessObject.get(propertiesElement[i].name) : '';
         };
         properties['uh:name'] = element.businessObject.name || '';
         properties['uh:dependencies'] = [];
@@ -97,16 +111,41 @@ function ModalPropertiesPanel(props) {
     const initializeTask = (element) => {
         const modeling = props.modeler.get('modeling');
         const elementRegistry = props.modeler.get('elementRegistry');
-        const arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task'));
+        const arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
 
         modeling.updateProperties(element, {
             'id': 'US-' + arrElements.length,
             'uh:priority': contentPriority[0],
-            'uh:points': contentPoints[0]
+            'uh:points': contentPoints[0],
+            'uh:smart': false,
         })
 
         props.createTagUH(props.modeler, 'Create Task')
     }
+
+    useEffect(() => {
+        if (props.modeler !== '') {
+            const overlays = props.modeler.get('overlays');
+            const overlaysSmart = [...props.overlaysSmart]
+            const index = overlaysSmart.findIndex((element) => element.taskId === props.selectedElement.businessObject.id)
+            if (userHistory['uh:smart'] === true && index === -1) { // Create overlay Smart
+                const overlayId = overlays.add(props.selectedElement, {
+                    position: {
+                        bottom: 15,
+                        right: 15
+                    },
+                    html: `<div class="smart-note">
+                                <span><i class="bi bi-cpu"></i></span>
+                            </div>`
+                });
+                props.setOverlaysSmart(prevState => [...prevState, { overlayId: overlayId, taskId: props.selectedElement.businessObject.id }])
+            } else if (userHistory['uh:smart'] === false && index !== -1) { // Delete overlay Smart
+                overlays.remove(overlaysSmart[index].overlayId)
+                overlaysSmart.splice(index, 1)
+                props.setOverlaysSmart(overlaysSmart)
+            }
+        }
+    }, [userHistory['uh:smart']]);
 
     useEffect(() => {
         if (props.modeler !== '' && props.newTask !== '') {
@@ -144,7 +183,7 @@ function ModalPropertiesPanel(props) {
                                 </div>
                             </div>
                             <div className='d-flex pb-3'>
-                                <div className="w-50 me-2">
+                                <div className="w-33 me-2">
                                     <label className="form-label">Priority:</label>
                                     <select className="form-select" name='uh:priority' value={userHistory['uh:priority']} onChange={updateProperties}>
                                         {
@@ -152,13 +191,19 @@ function ModalPropertiesPanel(props) {
                                         }
                                     </select>
                                 </div>
-                                <div className="w-50 ms-2">
+                                <div className="w-33 ms-2 me-2">
                                     <label className="form-label">Points:</label>
                                     <select className="form-select" name='uh:points' value={userHistory['uh:points']} onChange={updateProperties}>
                                         {
                                             contentPoints.map((element, i) => <option key={i} value={`${element}`}>{element}</option>)
                                         }
                                     </select>
+                                </div>
+                                <div className="w-33 ms-2">
+                                    <label className="form-label">Smart:</label>
+                                    <div className="form-check form-switch mt-2">
+                                        <input className="form-check-input" type="checkbox" role="switch" value={userHistory['uh:smart']} checked={userHistory['uh:smart']} onChange={() => handleOnChangeCheck('uh:smart')} />
+                                    </div>
                                 </div>
                             </div>
                             <div className="pb-3">

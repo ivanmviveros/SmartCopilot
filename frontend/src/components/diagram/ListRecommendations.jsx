@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as AprioriService from "../../service/AprioriService"
-import { Toast, Collapse } from 'bootstrap';
+import { Toast } from 'bootstrap';
 
 // Components
 import Alert from '../Alert';
@@ -62,7 +62,7 @@ const ListRecommendations = (props) => {
     const addTasks = () => {
         checkedRecommendations.forEach((item, i) => {
             if (item) {
-                props.setTasks(prevState => [...prevState, recommendations[i]])
+                props.setTasks(prevState => [...prevState, recommendations[i].sentence])
             }
         });
     }
@@ -128,10 +128,10 @@ const ListRecommendations = (props) => {
                                                 {recommendations.map(
                                                     (element, i) =>
                                                         <div key={i} className="form-check">
-                                                            <input className="form-check-input" type="checkbox" value={element} id={i + element} checked={checkedRecommendations[i]} onChange={() => handleOnChangeCheck(i)} />
+                                                            <input className="form-check-input" type="checkbox" value={element.sentence} id={i + element.sentence} checked={checkedRecommendations[i]} onChange={() => handleOnChangeCheck(i)} />
                                                             <div className='w-100 d-flex'>
-                                                                <label className="form-check-label truncated_text" htmlFor={i + element}>
-                                                                    {element}
+                                                                <label className="form-check-label truncated_text" htmlFor={i + element.sentence}>
+                                                                    {element.sentence}
                                                                 </label>
                                                             </div>
                                                         </div>

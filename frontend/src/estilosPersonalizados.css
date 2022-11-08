@@ -67,11 +67,28 @@ code {
 .task-note {
   background-color: green;
   color: White;
-  border-radius: 5px;
+  border-radius: 20px;
+  border-width: 2px;
+  border-style: solid;
   font-size: 12px;
   padding: 3px;
-  width: 60px;
+  min-width: 60px;
   text-align: center;
+}
+
+.smart-note {
+  background-color: blueviolet;
+  color: White;
+  border-radius: 5px;
+  border-radius: 20px;
+  border-width: 2px;
+  border-style: solid;
+  font-size: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
 }
 
 .pool-note-error {
@@ -80,7 +97,8 @@ code {
   border-radius: 5px;
   font-size: 14px;
   padding: 8px;
-  width: 190px;
+  display: flex;
+  /* min-width: 190px; */
   text-align: center;
 }
 
@@ -92,6 +110,10 @@ code {
   padding: 8px;
   width: 37px;
   text-align: center;
+}
+
+.task-note-text, .pool-note-error-text {
+  white-space: nowrap;
 }
 
 /* Table */

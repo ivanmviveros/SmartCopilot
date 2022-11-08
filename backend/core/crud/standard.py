@@ -35,7 +35,12 @@ class Crud():
 
     def create(self, request):
         """Tries to create a row in the database and returns the result"""
-        data = self.set_date(request.data.copy(), [
+        if hasattr(request, 'data'):
+            data = request.data
+        else:
+            data = request
+
+        data = self.set_date(data.copy(), [
                              'creation_date', 'update_date'])
         answer, answer_status = self.save_instance(data)
         return Response(answer, status=answer_status, content_type='application/json')

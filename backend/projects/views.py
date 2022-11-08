@@ -7,7 +7,7 @@ from .serializers import ProjectSerializer
 
 # Create your views here.
 
-crudObject = crudObject = Crud(ProjectSerializer, Project)
+crudObject = Crud(ProjectSerializer, Project)
 
 
 @api_view(['POST'])

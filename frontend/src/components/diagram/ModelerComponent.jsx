@@ -31,14 +31,15 @@ function ModelerComponent() {
   const [refModalPropertiesElement] = useState(React.createRef());
   const [modalPropertiesPanel, setModalPropertiesPanel] = useState('');
   const [refModalUserStories] = useState(React.createRef());
+  const [modalPdf, setModalPdf] = useState('');
   const [refModalPdf] = useState(React.createRef());
   const [modalUserStories, setModalUserStories] = useState('');
-  const [modalPdf, setModalPdf] = useState('');
   const [selectedElement, setSelectedElement] = useState('');
   const [typeElement] = useState('uh:props');
   const [newTask, setNewTask] = useState('');
   const [project, setProject] = useState({})
   const [overlaysError, setOverlaysError] = useState([])
+  const [overlaysSmart, setOverlaysSmart] = useState([])
 
 
   const [diagram, setDiagram] = useState({
@@ -64,6 +65,9 @@ function ModelerComponent() {
         });
 
         createTagUH(bpmnModeler, 'Initialize Tasks')
+        createTagSmart(bpmnModeler)
+        applyEvents(bpmnModeler)
+        setInstanceModeler(bpmnModeler)
       })
     } catch (err) {
       // console.log(err);
@@ -74,7 +78,7 @@ function ModelerComponent() {
     const modeling = bpmnModeler.get('modeling');
     const overlays = bpmnModeler.get('overlays');
     const elementRegistry = bpmnModeler.get('elementRegistry');
-    const tasks = elementRegistry.filter(element => is(element, 'bpmn:Task'));
+    const tasks = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
 
     // Reset id task
     if (type !== 'Create Task') {
@@ -93,18 +97,58 @@ function ModelerComponent() {
       overlays.add(element, {
         position: {
           top: -12,
-          left: -5
+          right: 55
         },
-        html: `<div class="task-note">${element.businessObject.id}</div>`
+        html: `<div class="task-note">
+                  <span class="task-note-text">${element.businessObject.id}</span>
+              </div>`
       });
     })
+  }
+
+  const createTagSmart = (bpmnModeler) => {
+    const overlays = bpmnModeler.get('overlays');
+    const elementRegistry = bpmnModeler.get('elementRegistry');
+    const tasks = elementRegistry.filter(element => (is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity')) && element.businessObject.get('uh:smart'));
+    const smartTags = []
+    var overlayId
+
+    // Assign id task
+    tasks.forEach((element, i) => {
+      overlayId = overlays.add(element, {
+        position: {
+          bottom: 15,
+          right: 15
+        },
+        html: `<div class="smart-note">
+                <span><i class="bi bi-cpu"></i></span>
+              </div>`
+      });
+      smartTags.push({
+        overlayId: overlayId,
+        taskId: element.businessObject.id
+      })
+    })
+
+    setOverlaysSmart(smartTags)
+  }
+
+  const saveSVG = async (modeler) => {
+    try {
+      const result = await modeler.saveSVG({ format: true });
+      const { svg } = result;
+
+      document.getElementById('imageSVG').innerHTML = svg;
+    } catch (error) {
+      // console.log(error);
+    }
   }
 
   const save = async (modeler) => {
     const elementRegistry = modeler.get('elementRegistry');
     const overlays = modeler.get('overlays');
     const participants = elementRegistry.filter(element => is(element, 'bpmn:Participant'));
-    const tasks = elementRegistry.filter(element => is(element, 'bpmn:Task'));
+    const tasks = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
     const invalidParticipants = [];
     const invalidTasks = [];
     var isValid = true;
@@ -141,7 +185,7 @@ function ModelerComponent() {
         await updateDiagram(formData, diagramId);
 
         // Add Rules - Association Rules
-        const arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task'));
+        const arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
         var newRules = []
         arrElements.forEach(element => {
           newRules = createAssociationRule(element, element, newRules)
@@ -160,6 +204,7 @@ function ModelerComponent() {
         const toast = new Toast(refAlertElement.current);
         toast.show();
       }
+      return true
     } else {
       // Alert
       setAlertMessage('Something wrong happened');
@@ -172,9 +217,12 @@ function ModelerComponent() {
         overlayId = overlays.add(element, {
           position: {
             top: -12,
-            left: -5
+            right: 55
           },
-          html: `<div class="pool-note-error"><i class="bi bi-exclamation-octagon-fill"></i> The role field is required</div>`
+          html: `<div class="pool-note-error">
+                  <span class="me-2"><i class="bi bi-exclamation-octagon-fill"></i></span>
+                  <span class="pool-note-error-text">The role field is required</span>
+                </div>`
         });
         overlayIds.push(overlayId)
       })
@@ -182,19 +230,23 @@ function ModelerComponent() {
         overlayId = overlays.add(element, {
           position: {
             top: -17,
-            right: 32
+            left: -5
           },
-          html: `<div class="task-note-error"><i class="bi bi-exclamation-octagon-fill"></i></div>`
+          html: `<div class="task-note-error">
+                  <span><i class="bi bi-exclamation-octagon-fill"></i></span>
+                </div>`
         });
         overlayIds.push(overlayId)
       })
       setOverlaysError(overlayIds)
+
+      return false
     }
   }
 
   const createAssociationRule = (element, elementSource, rules) => {
     element.outgoing.forEach(elementArrow => {
-      if (is(elementArrow.target, 'bpmn:Task')) {
+      if (is(elementArrow.target, 'bpmn:Task') || is(element, 'bpmn:CallActivity')) {
         rules.push([elementSource.businessObject.name.toLowerCase(), elementArrow.target.businessObject.name.toLowerCase()])
       } else {
         createAssociationRule(elementArrow.target, elementSource, rules)
@@ -212,10 +264,10 @@ function ModelerComponent() {
     }))
   }
 
-  const jsonCreate = (modeler) => {
+  const jsonCreate = () => {
     let arrUserStories = []
-    const elementRegistry = modeler.get('elementRegistry');
-    var arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task'));
+    const elementRegistry = instanceModeler.get('elementRegistry');
+    var arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
     arrElements = arrElements.sort((a, b) => {
       return a.id - b.id;
     });
@@ -231,9 +283,10 @@ function ModelerComponent() {
         'purpose': element.businessObject.get('uh:purpose') ? element.businessObject.get('uh:purpose') : "",
         'restrictions': element.businessObject.get('uh:restrictions') ? element.businessObject.get('uh:restrictions') : "",
         'acceptanceCriteria': element.businessObject.get('uh:acceptanceCriteria') ? element.businessObject.get('uh:acceptanceCriteria') : "",
-        'dependencies': element.businessObject.get('uh:dependencies') ? element.businessObject.get('uh:dependencies') : [],
+        'dependencies': createDependencies(element),
         'element': element
       }
+      console.log(uh.dependencies);
       arrUserStories.push(uh)
     });
     return {
@@ -258,11 +311,15 @@ function ModelerComponent() {
     setModalUserStories(modal);
   }
 
-  const openModalPdf = () => {
-    const modal = new Modal(refModalPdf.current, options);
-    modal.show();
-    setModalPdf(modal);
+  const openModalPdf = async () => {
+    var open = await save(instanceModeler)
+    if (open) {
+      const modal = new Modal(refModalPdf.current, options);
+      modal.show();
+      setModalPdf(modal);
+    }
   }
+
   const createDependencies = (selectedElement) => {
     const modeling = instanceModeler.get('modeling');
     var arrDependencies = []
@@ -275,7 +332,7 @@ function ModelerComponent() {
 
   const iterElement = (actualElement, arrDependencies) => {
     actualElement.incoming.forEach(element => {
-      if (is(element.source, 'bpmn:Task')) {
+      if (is(element.source, 'bpmn:Task') || is(element.source, 'bpmn:CallActivity')) {
         arrDependencies.push({
           id: element.source.businessObject.id,
           name: element.source.businessObject.name
@@ -285,6 +342,36 @@ function ModelerComponent() {
       }
     });
     return arrDependencies;
+  }
+
+  const applyEvents = (modeler) => {
+    const eventBus = modeler.get('eventBus');
+    const modeling = modeler.get('modeling');
+    var idChangeType;
+    eventBus.on('commandStack.shape.create.postExecute', async (e) => {
+      if (is(e.context.shape, 'bpmn:Task') || is(e.context.shape, 'bpmn:CallActivity')) {
+        setNewTask(e.context.shape);
+      }
+      if (is(e.context.shape, 'bpmn:SubProcess')) {
+        idChangeType = e.context.shape.id
+        modeling.updateProperties(e.context.shape, {
+          'id': 'newElement'
+        });
+      }
+    })
+    eventBus.on('commandStack.shape.delete.preExecuted', (e) => {
+      if (is(e.context.shape, 'bpmn:Task') || is(e.context.shape, 'bpmn:CallActivity')) {
+        modeling.updateProperties(e.context.shape, {
+          'id': idChangeType || 'deleteElement'
+        });
+        idChangeType = 'deleteElement'
+      }
+    })
+    eventBus.on('commandStack.shape.delete.postExecute', (e) => {
+      if (is(e.context.shape, 'bpmn:Task') || is(e.context.shape, 'bpmn:CallActivity')) {
+        createTagUH(modeler, 'Remove Task')
+      }
+    })
   }
 
   useEffect(() => {
@@ -301,9 +388,7 @@ function ModelerComponent() {
       //   bindTo: document
       // }
     });
-    setInstanceModeler(modeler);
     getProject();
-
 
     const getData = async () => {
       try {
@@ -314,21 +399,6 @@ function ModelerComponent() {
         // console.log(error);
       }
     }
-
-
-
-    // Events
-    const eventBus = modeler.get('eventBus');
-    eventBus.on('commandStack.shape.create.postExecute', (e) => {
-      if (is(e.context.shape, 'bpmn:Task')) {
-        setNewTask(e.context.shape);
-      }
-    })
-    eventBus.on('commandStack.shape.delete.postExecute', (e) => {
-      if (is(e.context.shape, 'bpmn:Task')) {
-        createTagUH(modeler, 'Remove Task')
-      }
-    })
 
     getData();
   }, [])
@@ -351,7 +421,7 @@ function ModelerComponent() {
             <button className="btn btn-outline-dark me-3" onClick={() => openModalUserStories()}>
               <i className="bi bi-file-earmark-text"></i> View User Stories
             </button>
-            {/* Button View US */}
+            {/* Button Create PDF US */}
             <button className="btn btn-success me-3" onClick={() => openModalPdf()}>
               <i className="bi bi-file-earmark-plus"></i> Create User Stories
             </button>
@@ -359,17 +429,22 @@ function ModelerComponent() {
             <button id="save_diagram" className="btn btn-primary" onClick={() => save(instanceModeler)}>
               <i className="bi bi-save"></i> Save
             </button>
+            <button id="save_diagram" className="btn btn-primary ms-3" onClick={() => saveSVG(instanceModeler)}>
+              <i className="bi bi-save"></i> Download
+            </button>
           </div>
         </div>
 
         {/* EBPM */}
         <div id="canvas">
         </div>
+
+        <div id="imageSVG"></div>
       </div>
 
       <ModalDiagram mode='Edit' handle={handleChange} name={diagram.name} description={diagram.description} />
-      <ModalPropertiesPanel createTagUH={createTagUH} newTask={newTask} setNewTask={setNewTask} selectedElement={selectedElement} createDependencies={createDependencies} modeler={instanceModeler} typeElement={typeElement} modalPropertiesPanel={modalPropertiesPanel} refModalPropertiesElement={refModalPropertiesElement} />
-      <ModalPdf jsonCreate={jsonCreate} createDependencies={createDependencies} modeler={instanceModeler} modalPdf={modalPdf} refModalPdf={refModalPdf}></ModalPdf>
+      <ModalPropertiesPanel overlaysSmart={overlaysSmart} setOverlaysSmart={setOverlaysSmart} createTagUH={createTagUH} newTask={newTask} setNewTask={setNewTask} selectedElement={selectedElement} createDependencies={createDependencies} modeler={instanceModeler} typeElement={typeElement} modalPropertiesPanel={modalPropertiesPanel} refModalPropertiesElement={refModalPropertiesElement} />
+      <ModalPdf jsonCreate={jsonCreate} modeler={instanceModeler} modalPdf={modalPdf} refModalPdf={refModalPdf}></ModalPdf>
       <ModalUserStories jsonCreate={jsonCreate} createDependencies={createDependencies} modeler={instanceModeler} modalUserStories={modalUserStories} refModalUserStories={refModalUserStories}></ModalUserStories>
       <Alert type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
     </>
