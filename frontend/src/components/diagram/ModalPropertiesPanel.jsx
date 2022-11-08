@@ -111,7 +111,7 @@ function ModalPropertiesPanel(props) {
     const initializeTask = (element) => {
         const modeling = props.modeler.get('modeling');
         const elementRegistry = props.modeler.get('elementRegistry');
-        const arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task'));
+        const arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
 
         modeling.updateProperties(element, {
             'id': 'US-' + arrElements.length,
@@ -132,9 +132,11 @@ function ModalPropertiesPanel(props) {
                 const overlayId = overlays.add(props.selectedElement, {
                     position: {
                         bottom: 15,
-                        right: 25
+                        right: 15
                     },
-                    html: `<div class="smart-note"><i class="bi bi-cpu"></i></div>`
+                    html: `<div class="smart-note">
+                                <span><i class="bi bi-cpu"></i></span>
+                            </div>`
                 });
                 props.setOverlaysSmart(prevState => [...prevState, { overlayId: overlayId, taskId: props.selectedElement.businessObject.id }])
             } else if (userHistory['uh:smart'] === false && index !== -1) { // Delete overlay Smart

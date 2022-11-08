@@ -4,13 +4,15 @@ import { useEffect } from "react";
 import { API_URL } from "../../utils";
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom';
-import { Toast } from "bootstrap";
+import { Toast, Modal } from "bootstrap";
+import { options } from '@bpmn-io/properties-panel/preact';
 
 // Components
 import DiagramCard from "./DiagramCard";
 import NavBar from "../NavBar";
 import ModalDiagram from "./ModalDiagram";
 import Alert from '../Alert';
+import ModalPdf from '../pdfbacklog/ModalPdf';
 
 function DiagramsCardList() {
     const { projectId } = useParams();
@@ -23,6 +25,8 @@ function DiagramsCardList() {
     const [alertMessage, setAlertMessage] = useState('');
     const [alertType, setAlertType] = useState('');
     const [refAlertElement] = useState(React.createRef());
+    const [modalPdf, setModalPdf] = useState('');
+    const [refModalPdf] = useState(React.createRef());
 
     const getListDiagrams = async () => {
         try {
@@ -72,6 +76,30 @@ function DiagramsCardList() {
         toast.show();
     }
 
+    const jsonCreate = () => {
+        var newId = 1
+        let arrUserStories = []
+        diagrams.forEach((element, i) => {
+            element.json_user_histories.userStories.map(us => {
+                us.id = 'US-' + newId
+                newId++
+                return us
+            })
+            arrUserStories = arrUserStories.concat(element.json_user_histories.userStories)
+        });
+
+        return {
+            projectId: projectId,
+            userStories: arrUserStories
+        }
+    }
+
+    const openModalPdf = async () => {
+        const modal = new Modal(refModalPdf.current, options);
+        modal.show();
+        setModalPdf(modal);
+    }
+
     useEffect(() => {
         getListDiagrams()
     }, [])
@@ -79,26 +107,35 @@ function DiagramsCardList() {
     return (
         <>
             <NavBar />
-            <div className="m-4 text-center">
-                <h5>Do you want create something?</h5>
-                <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalDiagram">
-                    <i className="bi bi-plus-lg"></i> Create New Diagram
-                </button>
-            </div>
-            <div className="m-4 row">
-                {diagrams.length > 0 ?
-                    (
-                        diagrams.map(
-                            (element, i) =>
-                                <DiagramCard key={i} index={i} diagram={element} getListDiagrams={getListDiagrams} showAlert={showAlert} projectId={projectId} />
-                        ))
+            <div className="p-4">
+                <div className="mb-4 text-center">
+                    <h5>Do you want create something?</h5>
+                    <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalDiagram">
+                        <i className="bi bi-plus-lg"></i> Create New Diagram
+                    </button>
+                </div>
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <span>{projectId}</span>
+                    <button className="btn btn-success" onClick={() => openModalPdf()}>
+                        <i className="bi bi-file-earmark-plus"></i> Create User Stories
+                    </button>
+                </div>
+                <div className="row">
+                    {diagrams.length > 0 ?
+                        (
+                            diagrams.map(
+                                (element, i) =>
+                                    <DiagramCard key={i} index={i} diagram={element} getListDiagrams={getListDiagrams} showAlert={showAlert} projectId={projectId} />
+                            ))
 
-                    : (<h5 className="fst-italic fw-lighte">There is nothing to show</h5>)
-                }
-            </div>
+                        : (<h5 className="fst-italic fw-lighte">There is nothing to show</h5>)
+                    }
+                </div>
 
-            <ModalDiagram mode='Create' handle={handleChange} createNewDiagram={createNewDiagram} />
-            <Alert type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
+                <ModalDiagram mode='Create' handle={handleChange} createNewDiagram={createNewDiagram} />
+                <ModalPdf jsonCreate={jsonCreate} modalPdf={modalPdf} refModalPdf={refModalPdf}></ModalPdf>
+                <Alert type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
+            </div>
         </>
     )
 }

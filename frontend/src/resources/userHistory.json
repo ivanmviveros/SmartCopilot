@@ -8,7 +8,8 @@
     "types": [{
         "name": "props",
         "extends": [
-            "bpmn:Task"
+            "bpmn:Task",
+            "bpmn:CallActivity"
         ],
         "superClass": ["Element"],
         "properties": [{
