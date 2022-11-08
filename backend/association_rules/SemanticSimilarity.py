@@ -1,17 +1,22 @@
 import os
 from django.conf import settings
-from sentence_transformers import util
-from django.apps import apps
 import spacy
-
+import gc
 
 class SemanticSimilarity:
-    nlp = spacy.load("en_core_web_md")
+    nlp = None
+
+    def load_nlp(self):
+        self.nlp = spacy.load(settings.SENTENCE_TRANSFORMER_MODEL_NAME)
+
+    def unload_nlp(self):
+        del self.nlp
+        gc.collect()
 
     def getSimilarity(self, query, corpus, minSimilarity):
+        self.load_nlp()
         query = self.nlp(query)
         corpus = self.nlp.pipe(corpus)
-
         similarDoc = []
         # print('---------------------')
         # print('------', query.text, '------')
@@ -20,5 +25,5 @@ class SemanticSimilarity:
                 similarDoc = [round(query.similarity(doc), 3), doc.text]
                 # print(f"{doc.text}: {round(query.similarity(doc), 3)}")
         # print('---------------------')
-
+        self.unload_nlp()
         return similarDoc
