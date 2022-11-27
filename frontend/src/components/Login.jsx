@@ -19,7 +19,7 @@ function Login() {
             if (cred.access_token) {
                 sessionStorage.setItem('userToken', cred.access_token)
                 sessionStorage.setItem('userId', cred.user.id)
-                navigate('/profile')
+                navigate('/')
             } else {
                 navigate('/login')
             }

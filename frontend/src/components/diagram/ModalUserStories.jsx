@@ -28,12 +28,14 @@ function ModalUserStories(props) {
         if (props.modalUserStories._isShown === true) {
             const ListUserStories = props.jsonCreate(props.modeler).userStories;
             setUserStories(ListUserStories);
-            setSelectedUserStory(ListUserStories[0]);
-            const arrDependencies = props.createDependencies(ListUserStories[0].element);
-            setSelectedUserStory((prevState) => ({
-                ...prevState,
-                'dependencies': arrDependencies
-            }))
+            if(ListUserStories.length > 0){
+                setSelectedUserStory(ListUserStories[0]);
+                const arrDependencies = props.createDependencies(ListUserStories[0].element)
+                setSelectedUserStory((prevState) => ({
+                    ...prevState,
+                    'dependencies': arrDependencies
+                }))
+            }
         }
     }, [props.modalUserStories]);
 

@@ -92,7 +92,7 @@ const ListRecommendations = (props) => {
 
     return (
         <div className='p-3 w-50 border-start overflow-auto'>
-            <p>Recommendations</p>
+            <h5>Recommendations</h5>
             {
                 recommendations.length > 0 ?
                     (
@@ -119,7 +119,7 @@ const ListRecommendations = (props) => {
                                             </button>
                                             {
                                                 i !== 0 ?
-                                                    <button onClick={() => showToastDeleteTask(i)} className={`btn btn-danger rounded-0 ${i === props.tasks.length - 1 ? 'rounded-bot-right' : ''}`}><i className="bi bi-trash-fill"></i></button>
+                                                    <button onClick={() => showToastDeleteTask(i)} className={`btn-one py-1 px-3 rounded-0 ${i === props.tasks.length - 1 ? 'rounded-bot-right' : ''}`}><i className="bi bi-trash-fill fs-5"></i></button>
                                                     : ''
                                             }
                                         </h2>
@@ -136,7 +136,7 @@ const ListRecommendations = (props) => {
                                                             </div>
                                                         </div>
                                                 )}
-                                                <button onClick={() => addTasks()} className='btn btn-primary mt-3'><i className="bi bi-plus-lg"></i> Add</button>
+                                                <button onClick={() => addTasks()} className='btn-one py-2 mt-3'><i className="bi bi-plus-lg"></i> Add</button>
                                             </div>
                                         </div>
                                     </div>
