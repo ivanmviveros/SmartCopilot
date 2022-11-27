@@ -8,5 +8,5 @@ class DiagramSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Diagram
-        fields = ['id', 'name', 'description', 'xml', 'json_user_histories', 'id_project', 'creation_date',
+        fields = ['id', 'name', 'description', 'xml', 'svg', 'json_user_histories', 'id_project', 'creation_date',
                   'update_date']

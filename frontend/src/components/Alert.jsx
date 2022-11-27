@@ -6,10 +6,10 @@ function Alert(props) {
 
     useEffect(() => {
         if (props.type === 'Success') {
-            setBackgroundColor('text-bg-success')
+            setBackgroundColor('text-bg-success text-white')
             setIcon('bi bi-check-circle')
         } else if (props.type === 'Error') {
-            setBackgroundColor('text-bg-danger')
+            setBackgroundColor('text-bg-danger text-white')
             setIcon('bi bi-x-circle')
         } else if (props.type === 'Warning') {
             setBackgroundColor('text-bg-warning')
@@ -23,7 +23,9 @@ function Alert(props) {
                 <div className={`toast-header ${backgroundColor}`}>
                     <i className={`me-1 ${icon}`}></i>
                     <strong className="me-auto">{props.type}</strong>
-                    <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    <button type="button" className="btn-transparent px-1" data-bs-dismiss="toast" aria-label="Close">
+                        <i className="bi bi-x-lg"></i>
+                    </button>
                 </div>
                 <div className="toast-body">
                     {props.message}

@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import './estilos.css';
-import './estilosPersonalizados.css';
+import './styles/styles.css';
+import './styles/customStyles.css';
 
 // components import
 import Login from './components/Login'
@@ -18,9 +18,6 @@ import Home from './components/Home';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-    {/* <RequireAuth>
-        <NavBar/>
-      </RequireAuth> */}
     <Routes>
       {/* Authentication */}
       <Route exact path="/login" element={<Login />}></Route>

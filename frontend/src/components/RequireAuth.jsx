@@ -1,14 +1,11 @@
-// import { useContext } from "react"
 import { useLocation, Navigate } from "react-router-dom";
-// import UserContext from '../context/UserContext';
 
-function RequireAuth({children}){
-    // const {stateUser} = useContext(UserContext)
+function RequireAuth({ children }) {
     const location = useLocation()
     const userToken = sessionStorage.getItem('userToken')
-    if (userToken){
+    if (userToken) {
         return children
-    }else{
+    } else {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 }

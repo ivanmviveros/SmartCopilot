@@ -12,6 +12,7 @@ class Apriori:
     crudAssociationRule = Crud(AssociationRuleSerializer, AssociationRule)
     crudBaseGroup = Crud(BaseGroupSerializer, BaseGroup)
     crudResultGroup = Crud(ResultGroupSerializer, ResultGroup)
+    similarity = SemanticSimilarity()
 
     def recommended(self, key):
         arrRules = AssociationRule.objects.all().values_list(
@@ -23,6 +24,8 @@ class Apriori:
         arrResultGroups = np.array(arrResultGroups)
 
         recommendations = []
+
+        self.similarity.load_nlp()
 
         if (len(arrRules) > 0):
             # Apply association rules
@@ -49,6 +52,8 @@ class Apriori:
                 recommendations.sort(key=lambda x: x.get(
                     'confidence'), reverse=True)
 
+        self.similarity.unload_nlp()
+
         return recommendations
 
     def add(self, request):
@@ -57,6 +62,8 @@ class Apriori:
         [arrResultGroups, sentenceResultGroups,
             numberResultGroups] = self.formatResultGroups()
         newRules = request.data['rules']
+
+        self.similarity.load_nlp()
 
         for rule in newRules:
             # Create new base groups and change key per base group
@@ -129,6 +136,8 @@ class Apriori:
                 'result_group_id': rule[1]
             })
 
+        self.similarity.unload_nlp()
+
         return True
 
     def assignGroup(self, groups, element):
@@ -136,8 +145,8 @@ class Apriori:
 
     def searchGroup(self, groups, key, sentenceGroups):
         if (len(sentenceGroups) > 0):
-            similaries = SemanticSimilarity().getSimilarity(
-                key, sentenceGroups, 0.75)  # Percentage of similarity tolerance
+            similaries = self.similarity.getSimilarity(
+                key, sentenceGroups, 0.90)  # Percentage of similarity tolerance
             if(len(similaries) > 0):
                 index = sentenceGroups.index(similaries[1])
                 if (similaries[0] < 1):  # This user story does not exactly exist

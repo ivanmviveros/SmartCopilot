@@ -13,5 +13,7 @@ router = DefaultRouter()
 router.register(r'users', user_views.UserViewSet, basename='users')
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('user/firstName/<int:userId>',
+         user_views.getFullName, name='getFullName'),
 ]

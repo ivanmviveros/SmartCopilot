@@ -43,16 +43,17 @@ function ModalPdf(props) {
         <div className="modal fade" id="modalPdf" aria-labelledby="tittleUserStories" aria-hidden="true" ref={props.refModalPdf}>
             <div className="modal-dialog modal-fullscreen">
                 <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title" id="titleModalPdf">Product Backlog</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div className="modal-header bg-one">
+                        <h5 className="modal-title text-white" id="titleModalPdf">Product Backlog</h5>
+                        <button type="button" className="btn-one px-1" data-bs-dismiss="modal" aria-label="Close">
+                            <i className="bi bi-x-lg"></i>
+                        </button>
                     </div>
                     <div className="modal-body d-flex p-0">
-                        <PDFViewer style={{ width: "100%", height: "90vh" }}>
+                        <PDFViewer style={{ width: "100%", height: "100%" }}>
                             <DocumentPdf userStories={userStories} />
                         </PDFViewer>
                     </div>
-
                 </div>
             </div>
         </div>

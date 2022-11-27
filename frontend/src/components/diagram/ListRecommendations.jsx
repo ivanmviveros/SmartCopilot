@@ -101,8 +101,8 @@ const ListRecommendations = (props) => {
                                 (element, i) =>
                                     <div key={i}
                                         className={`accordion-item ${indexDragOverTask === i && indexDragTask < indexDragOverTask ?
-                                            'border_bold_bot' : indexDragOverTask === i && indexDragTask > indexDragOverTask ?
-                                                'border_bold_top' : ''}`}
+                                            'border-bold-bot-one' : indexDragOverTask === i && indexDragTask > indexDragOverTask ?
+                                                'border-bold-top-one' : ''}`}
                                         draggable={i !== 0 ? true : false}
                                         onDragStart={i !== 0 ? (e) => setIndexDragTask(i) : null}
                                         onDragEnter={i !== 0 ? (e) => setIndexDragOverTask(i) : null}
@@ -119,7 +119,7 @@ const ListRecommendations = (props) => {
                                             </button>
                                             {
                                                 i !== 0 ?
-                                                    <button onClick={() => showToastDeleteTask(i)} className={`btn btn-danger rounded-0 ${i === props.tasks.length - 1 ? 'rounded_bot_right' : ''}`}><i className="bi bi-trash-fill"></i></button>
+                                                    <button onClick={() => showToastDeleteTask(i)} className={`btn btn-danger rounded-0 ${i === props.tasks.length - 1 ? 'rounded-bot-right' : ''}`}><i className="bi bi-trash-fill"></i></button>
                                                     : ''
                                             }
                                         </h2>

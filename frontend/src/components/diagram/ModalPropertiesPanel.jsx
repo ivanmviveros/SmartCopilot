@@ -135,7 +135,7 @@ function ModalPropertiesPanel(props) {
                         right: 15
                     },
                     html: `<div class="smart-note">
-                                <span><i class="bi bi-cpu"></i></span>
+                                <span class="text-white"><i class="bi bi-cpu"></i></span>
                             </div>`
                 });
                 props.setOverlaysSmart(prevState => [...prevState, { overlayId: overlayId, taskId: props.selectedElement.businessObject.id }])
@@ -165,10 +165,12 @@ function ModalPropertiesPanel(props) {
     return (
         <div className="modal fade" id="propertiesPanel" aria-labelledby="tittlePropertiesPanel" aria-hidden="true" ref={props.refModalPropertiesElement}>
             <div className={`modal-dialog modal-dialog-centered modal-dialog-scrollable ${panelRecommendations ? 'w_with_recom modal-xl' : 'w_without_recom modal-lg'}`}>
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title" id="tittlePropertiesPanel">Properties Panel</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div className="modal-content bg-two border-0">
+                    <div className="modal-header bg-one">
+                        <h5 className="modal-title text-white" id="tittlePropertiesPanel">Properties Panel</h5>
+                        <button type="button" className="btn-one px-1" data-bs-dismiss="modal" aria-label="Close">
+                            <i className="bi bi-x-lg"></i>
+                        </button>
                     </div>
                     <div className="modal-body p-0 d-flex">
                         <div className={`p-3 ${panelRecommendations ? 'w-50' : 'w-100'}`}>
@@ -176,7 +178,7 @@ function ModalPropertiesPanel(props) {
                                 <label className="form-label">Name:</label>
                                 <div className='d-flex'>
                                     <input className="form-control" name='uh:name' value={userHistory['uh:name']} onChange={updateLabel} />
-                                    <button className='btn btn-primary ms-3 d-flex' onClick={() => openListRecommendations()}>
+                                    <button className='btn-one px-3 ms-3 d-flex align-items-center' onClick={() => openListRecommendations()}>
                                         <i className="bi bi-lightbulb-fill me-1"></i>
                                         <i className={`bi ${panelRecommendations ? 'bi-chevron-right' : 'bi-chevron-left'}`}></i>
                                     </button>
@@ -214,14 +216,14 @@ function ModalPropertiesPanel(props) {
                                 <label className="form-label">Restrictions:</label>
                                 <textarea className="form-control" rows="3" name='uh:restrictions' value={userHistory['uh:restrictions']} onChange={updateProperties}></textarea>
                             </div>
-                            <div className="pb-3">
+                            <div className={`${userHistory['uh:dependencies'].length > 0 ? 'pb-3' : ''}`}>
                                 <label className="form-label">Acceptance Criteria:</label>
                                 <textarea className="form-control" rows="3" name='uh:acceptanceCriteria' value={userHistory['uh:acceptanceCriteria']} onChange={updateProperties}></textarea>
                             </div>
                             {
                                 userHistory['uh:dependencies'].length > 0 ?
                                     (
-                                        <div className="pb-3">
+                                        <div>
                                             <label className="form-label">Dependencies:</label>
                                             <ul>
                                                 {userHistory['uh:dependencies'].map(
@@ -240,13 +242,13 @@ function ModalPropertiesPanel(props) {
                                 : ''
                         }
                     </div>
-                    <div className="modal-footer">
+                    <div className="modal-footer border-0">
+                        <button type="button" className="btn-two shadow-lg py-1" data-bs-dismiss="modal">Close</button>
                         {
                             panelRecommendations ?
-                                <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => addElements()}>Done</button>
+                                <button type="button" className="btn-one shadow-lg py-1" data-bs-dismiss="modal" onClick={() => addElements()}>Done</button>
                                 : ''
                         }
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>

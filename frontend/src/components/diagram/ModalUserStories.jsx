@@ -40,14 +40,16 @@ function ModalUserStories(props) {
     return (
         <div className="modal fade" id="userStories" aria-labelledby="tittleUserStories" aria-hidden="true" ref={props.refModalUserStories}>
             <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title" id="tittlePropertiesPanel">User Stories List</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div className="modal-content bg-two border-0">
+                    <div className="modal-header bg-one">
+                        <h5 className="modal-title text-white" id="tittlePropertiesPanel">User Stories List</h5>
+                        <button type="button" className="btn-one px-1" data-bs-dismiss="modal" aria-label="Close">
+                            <i className="bi bi-x-lg"></i>
+                        </button>
                     </div>
                     <div className="modal-body d-flex p-0">
                         <div className='w-50 p-3 table-responsive overflow-auto'>
-                            <table className="table table-cursor table-striped table-hover mb-0">
+                            <table id='table-list-user-stories' className="table table-cursor table-striped table-hover mb-0">
                                 <thead>
                                     <tr>
                                         <th className='col-2' scope="col">Id</th>
@@ -68,10 +70,10 @@ function ModalUserStories(props) {
                         </div>
                         <div className='w-50 p-3 border-start overflow-auto'>
                             <div className='rounded-2 bg-info bg-opacity-10 mb-2'>
-                                <div className='bg-info bg-opacity-25 rounded-top'>
-                                    <p className='text-center fw-bold mb-0'>User Story</p>
+                                <div className='bg-one bg-opacity-25 rounded-top py-1'>
+                                    <p className='text-center text-white fw-bold mb-0'>User Story</p>
                                 </div>
-                                <div className='p-3'>
+                                <div className='px-3 py-2'>
                                     <table className='table mb-0'>
                                         <tbody>
                                             <tr>
@@ -83,8 +85,8 @@ function ModalUserStories(props) {
                                 </div>
                             </div>
                             <div className='rounded-2 bg-info bg-opacity-10 mb-2'>
-                                <div className='bg-info bg-opacity-25 rounded-top'>
-                                    <p className='text-center fw-bold mb-0'>Details</p>
+                                <div className='bg-one bg-opacity-25 rounded-top py-1'>
+                                    <p className='text-center text-white fw-bold mb-0'>Details</p>
                                 </div>
                                 <div className='p-3'>
                                     <table className='table mb-0'>
@@ -154,8 +156,20 @@ function ModalUserStories(props) {
                             }
                         </div>
                     </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <div className="modal-footer border-0">
+                        <button type="button" className="btn-two shadow-lg py-1" data-bs-dismiss="modal">Close</button>
+                        {/* Button Create PDF US */}
+                        <button className="btn-one shadow-lg py-1" onClick={() => props.openModalPdf()} disabled={!props.loadCreateUserStories}>
+                            {
+                                props.loadCreateUserStories ?
+                                    <i className="bi bi-file-earmark-plus me-1"></i>
+                                    :
+                                    <div className="spinner-border spinner-border-sm text-white me-1" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                            }
+                            Create User Stories
+                        </button>
                     </div>
                 </div>
             </div>

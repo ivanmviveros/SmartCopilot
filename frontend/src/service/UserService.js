@@ -31,3 +31,9 @@ export const register = async (data) => {
         })
     })
 }
+
+export const getFullName = async (userId) => {
+    return await fetch(`${API_URL}/user/firstName/${userId}`, {
+        method: "GET",
+    }).then(response => response.json())
+}

@@ -37,10 +37,11 @@ function ModelerComponent() {
   const [selectedElement, setSelectedElement] = useState('');
   const [typeElement] = useState('uh:props');
   const [newTask, setNewTask] = useState('');
-  const [project, setProject] = useState({})
-  const [overlaysError, setOverlaysError] = useState([])
-  const [overlaysSmart, setOverlaysSmart] = useState([])
-
+  const [project, setProject] = useState({});
+  const [overlaysError, setOverlaysError] = useState([]);
+  const [overlaysSmart, setOverlaysSmart] = useState([]);
+  const [loadCreateUserStories, setLoadCreateUserStories] = useState(true);
+  const [loadSave, setLoadSave] = useState(true);
 
   const [diagram, setDiagram] = useState({
     name: '',
@@ -100,7 +101,7 @@ function ModelerComponent() {
           right: 55
         },
         html: `<div class="task-note">
-                  <span class="task-note-text">${element.businessObject.id}</span>
+                  <span class="task-note-text text-white">${element.businessObject.id}</span>
               </div>`
       });
     })
@@ -121,7 +122,7 @@ function ModelerComponent() {
           right: 15
         },
         html: `<div class="smart-note">
-                <span><i class="bi bi-cpu"></i></span>
+                <span class="text-white"><i class="bi bi-cpu"></i></span>
               </div>`
       });
       smartTags.push({
@@ -133,18 +134,8 @@ function ModelerComponent() {
     setOverlaysSmart(smartTags)
   }
 
-  const saveSVG = async (modeler) => {
-    try {
-      const result = await modeler.saveSVG({ format: true });
-      const { svg } = result;
-
-      document.getElementById('imageSVG').innerHTML = svg;
-    } catch (error) {
-      // console.log(error);
-    }
-  }
-
   const save = async (modeler) => {
+    setLoadSave(false)
     const elementRegistry = modeler.get('elementRegistry');
     const overlays = modeler.get('overlays');
     const participants = elementRegistry.filter(element => is(element, 'bpmn:Participant'));
@@ -176,21 +167,17 @@ function ModelerComponent() {
       try {
         // Update Diagram
         const data = await modeler.saveXML({ format: true });
+        const resultSvg = await modeler.saveSVG({ format: true });
         const formData = {
           name: diagram.name,
           description: diagram.description,
           xml: data.xml,
+          svg: resultSvg.svg,
           json_user_histories: jsonCreate(modeler),
         }
-        await updateDiagram(formData, diagramId);
-
-        // Add Rules - Association Rules
-        const arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
-        var newRules = []
-        arrElements.forEach(element => {
-          newRules = createAssociationRule(element, element, newRules)
-        })
-        const res = await addRules(newRules)
+        await updateDiagram(formData, diagramId).then(res => {
+          setLoadSave(true);
+        });
 
         // Alert
         setAlertMessage('Successfully saved');
@@ -220,8 +207,8 @@ function ModelerComponent() {
             right: 55
           },
           html: `<div class="pool-note-error">
-                  <span class="me-2"><i class="bi bi-exclamation-octagon-fill"></i></span>
-                  <span class="pool-note-error-text">The role field is required</span>
+                  <span class="me-2 text-white"><i class="bi bi-exclamation-octagon-fill"></i></span>
+                  <span class="pool-note-error-text text-white">The role field is required</span>
                 </div>`
         });
         overlayIds.push(overlayId)
@@ -233,21 +220,34 @@ function ModelerComponent() {
             left: -5
           },
           html: `<div class="task-note-error">
-                  <span><i class="bi bi-exclamation-octagon-fill"></i></span>
+                  <span class="text-white"><i class="bi bi-exclamation-octagon-fill"></i></span>
                 </div>`
         });
         overlayIds.push(overlayId)
       })
       setOverlaysError(overlayIds)
+      setLoadSave(true);
 
       return false
     }
   }
 
+  const addAssociationRules = async () => {
+    const elementRegistry = instanceModeler.get('elementRegistry');
+    // Add Rules - Association Rules
+    const arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
+    var newRules = []
+    arrElements.forEach(element => {
+      newRules = createAssociationRule(element, element, newRules)
+    })
+    const res = await addRules(newRules)
+  }
+
   const createAssociationRule = (element, elementSource, rules) => {
     element.outgoing.forEach(elementArrow => {
-      if (is(elementArrow.target, 'bpmn:Task') || is(element, 'bpmn:CallActivity')) {
+      if (is(elementArrow.target, 'bpmn:Task') || is(elementArrow.target, 'bpmn:CallActivity')) {
         rules.push([elementSource.businessObject.name.toLowerCase(), elementArrow.target.businessObject.name.toLowerCase()])
+      } else if (is(elementArrow.target, 'bpmn:SubProcess')) {
       } else {
         createAssociationRule(elementArrow.target, elementSource, rules)
       }
@@ -286,7 +286,6 @@ function ModelerComponent() {
         'dependencies': createDependencies(element),
         'element': element
       }
-      console.log(uh.dependencies);
       arrUserStories.push(uh)
     });
     return {
@@ -312,8 +311,12 @@ function ModelerComponent() {
   }
 
   const openModalPdf = async () => {
+    setLoadCreateUserStories(false)
     var open = await save(instanceModeler)
+    modalUserStories.hide();
+    setLoadCreateUserStories(true)
     if (open) {
+      addAssociationRules();
       const modal = new Modal(refModalPdf.current, options);
       modal.show();
       setModalPdf(modal);
@@ -384,6 +387,11 @@ function ModelerComponent() {
       moddleExtensions: {
         uh: uhExtension
       },
+      textRenderer: {
+        defaultStyle: {
+          fontFamily: '"Montserrat"'
+        }
+      },
       // keyboard: {
       //   bindTo: document
       // }
@@ -404,50 +412,49 @@ function ModelerComponent() {
   }, [])
 
   return (
-    <>
+    <div className='bg-two'>
       <NavBar />
+
       <div id="model_diagram">
         {/* Options diagram */}
-        <div className='d-flex justify-content-between info py-2 px-3'>
+        <div className='d-flex justify-content-between align-items-center info py-2 px-3'>
           {/* Name and edit */}
-          <div className='d-flex alig-items-center'>
-            <h3>{diagram.name}</h3>
-            <button className='btn border border-white rounded-circle ms-1' data-bs-toggle="modal" data-bs-target="#modalDiagram">
+          <div className='d-flex'>
+            <h4 className='mb-0'>{project.name} / {diagram.name}</h4>
+            <button className='btn-transparent ms-2' data-bs-toggle="modal" data-bs-target="#modalDiagram">
               <i className="bi bi-pencil"></i>
             </button>
           </div>
           <div>
             {/* Button View US */}
-            <button className="btn btn-outline-dark me-3" onClick={() => openModalUserStories()}>
+            <button className="btn-four py-2 me-3" onClick={() => openModalUserStories()}>
               <i className="bi bi-file-earmark-text"></i> View User Stories
             </button>
-            {/* Button Create PDF US */}
-            <button className="btn btn-success me-3" onClick={() => openModalPdf()}>
-              <i className="bi bi-file-earmark-plus"></i> Create User Stories
-            </button>
             {/* Button Save */}
-            <button id="save_diagram" className="btn btn-primary" onClick={() => save(instanceModeler)}>
-              <i className="bi bi-save"></i> Save
-            </button>
-            <button id="save_diagram" className="btn btn-primary ms-3" onClick={() => saveSVG(instanceModeler)}>
-              <i className="bi bi-save"></i> Download
+            <button id="save_diagram" className="btn-one py-2" onClick={() => save(instanceModeler)} disabled={!loadSave}>
+              {
+                loadSave ?
+                  <i className="bi bi-save me-1"></i>
+                  :
+                  <div className="spinner-border spinner-border-sm text-white me-1" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+              }
+              Save
             </button>
           </div>
         </div>
 
         {/* EBPM */}
-        <div id="canvas">
-        </div>
-
-        <div id="imageSVG"></div>
+        <div id="canvas"></div>
       </div>
 
       <ModalDiagram mode='Edit' handle={handleChange} name={diagram.name} description={diagram.description} />
       <ModalPropertiesPanel overlaysSmart={overlaysSmart} setOverlaysSmart={setOverlaysSmart} createTagUH={createTagUH} newTask={newTask} setNewTask={setNewTask} selectedElement={selectedElement} createDependencies={createDependencies} modeler={instanceModeler} typeElement={typeElement} modalPropertiesPanel={modalPropertiesPanel} refModalPropertiesElement={refModalPropertiesElement} />
       <ModalPdf jsonCreate={jsonCreate} modeler={instanceModeler} modalPdf={modalPdf} refModalPdf={refModalPdf}></ModalPdf>
-      <ModalUserStories jsonCreate={jsonCreate} createDependencies={createDependencies} modeler={instanceModeler} modalUserStories={modalUserStories} refModalUserStories={refModalUserStories}></ModalUserStories>
+      <ModalUserStories jsonCreate={jsonCreate} createDependencies={createDependencies} modeler={instanceModeler} modalUserStories={modalUserStories} refModalUserStories={refModalUserStories} openModalPdf={openModalPdf} loadCreateUserStories={loadCreateUserStories}></ModalUserStories>
       <Alert type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
-    </>
+    </div>
   )
 }
 export default ModelerComponent;

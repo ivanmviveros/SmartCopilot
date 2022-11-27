@@ -34,81 +34,65 @@ function Register() {
     }
 
     return (
-        <div className="container">
-            <div className="card text-center">
-                <div className="card-header bg-dark text-white">
-                    <h5 className='card-title'>Register</h5>
+        <div id='register' className='d-flex justify-content-center align-items-center h-100'>
+            <div>
+                <div className='mb-3'>
+                    <h1 className='text-center text-white fw-bold fs-48'>EBPM</h1>
                 </div>
-                <div className="card-body">
-                    <form onSubmit={sendData} className="mb-3">
 
-                        {/* first_name field*/}
-                        <div className="row mb-3">
-                            <div className="col col-md-4">
-                                <h5 className="card-title">First name</h5>
+                <div className="card shadow-lg bg-one">
+                    <div className='card-title py-4 mb-0'>
+                        <h4 className='text-white mb-0 text-center'>Register</h4>
+                    </div>
+                    <div className="card-body px-5 mx-4 py-3">
+                        <form onSubmit={sendData} className="text-center">
+                            {/* first_name field*/}
+                            <div className="input-group col">
+                                <span className='input-group-text bg-white border border-0 pe-1'><i className="bi bi-person-lines-fill"></i></span>
+                                <input onChange={handleInputChange} type="text" className="form-control border border-0 ps-2" placeholder='First name' name="first_name" />
                             </div>
-                            <div className="col ">
-                                <input onChange={handleInputChange} type="text" className="form-control" id="first_name" name="first_name" />
-                                <small className="text-muted">Introduce your first name</small>
-                            </div>
-                        </div>
-                        {/* last_name field*/}
-                        <div className="row mb-3">
-                            <div className="col col-md-4">
-                                <h5 className="card-title">Last name</h5>
-                            </div>
-                            <div className="col ">
-                                <input onChange={handleInputChange} type="text" className="form-control" id="lastname" name="last_name" />
-                                <small className="text-muted">Introduce your last name</small>
-                            </div>
-                        </div>
-                        {/* Email field*/}
-                        <div className="row mb-3">
-                            <div className="col col-md-4">
-                                <h5 className="card-title">Email</h5>
-                            </div>
-                            <div className="col ">
-                                <input onChange={handleInputChange} type="email" className="form-control" id="email" name="email" />
-                                <small className="text-muted">Introduce a correct email</small>
-                            </div>
-                        </div>
+                            {/* <small className="text-muted">Introduce your first name</small> */}
 
-                        {/* Username field*/}
-                        <div className="row mb-3">
-                            <div className="col col-md-4">
-                                <h5 className="card-title">Username</h5>
+                            {/* last_name field*/}
+                            <div className="input-group col mt-3">
+                                <span className='input-group-text bg-white border border-0 pe-1'><i className="bi bi-person-lines-fill"></i></span>
+                                <input onChange={handleInputChange} type="text" className="form-control border border-0 ps-2" placeholder='Last name' name="last_name" />
                             </div>
-                            <div className="col ">
-                                <input onChange={handleInputChange} type="text" className="form-control" id="username" name="username" />
-                                <small className="text-muted">Min 8 letters</small>
-                            </div>
-                        </div>
+                            {/* <small className="text-muted">Introduce your last name</small> */}
 
-                        {/* Password field*/}
-                        <div className="row mb-3">
-                            <div className="col col-md-4">
-                                <h5 className="card-title">Password</h5>
+                            {/* Email field*/}
+                            <div className="input-group col mt-3">
+                                <span className='input-group-text bg-white border border-0 pe-1'><i className="bi bi-envelope"></i></span>
+                                <input onChange={handleInputChange} type="email" className="form-control border border-0 ps-2" placeholder='Email' name="email" />
                             </div>
-                            <div className="col ">
-                                <input onChange={handleInputChange} type="password" className="form-control" id="password" name="password" />
-                                <small className="text-muted">Min 8 letters</small>
-                            </div>
-                        </div>
+                            {/* <small className="text-muted">Introduce a correct email</small> */}
 
-                        {/* Password_confirmation field*/}
-                        <div className="row mb-3">
-                            <div className="col col-md-4">
-                                <h5 className="card-title">Password confirmation</h5>
+                            {/* Username field*/}
+                            <div className="input-group col mt-3">
+                                <span className='input-group-text bg-white border border-0 pe-1'><i className="bi bi-person"></i></span>
+                                <input onChange={handleInputChange} type="text" className="form-control border border-0 ps-2" placeholder='Username' name="username" />
                             </div>
-                            <div className="col ">
-                                <input onChange={handleInputChange} type="password" className="form-control" id="password_confirmation" name="password_confirmation" />
-                                <small className="text-muted">Please confirm your password</small>
+                            {/* <small className="text-muted">Min 8 letters</small> */}
+
+                            {/* Password field*/}
+                            <div className="input-group col mt-3">
+                                <span className='input-group-text bg-white border border-0 pe-1'><i className="bi bi-person"></i></span>
+                                <input onChange={handleInputChange} type="password" className="form-control border border-0 ps-2" placeholder='Password' name="password" />
                             </div>
-                        </div>
+                            {/* <small className="text-muted">Min 8 letters</small> */}
 
+                            {/* Password_confirmation field*/}
+                            <div className="input-group col mt-3">
+                                <span className='input-group-text bg-white border border-0 pe-1'><i className="bi bi-person"></i></span>
+                                <input onChange={handleInputChange} type="password" className="form-control border border-0 ps-2" placeholder='Password confirmation' name="password_confirmation" />
+                            </div>
+                            {/* <small className="text-muted">Please confirm your password</small> */}
 
-                        <button type="submit" className="btn btn-primary form-control">Go!</button>
-                    </form>
+                            <div className='my-3'>
+                                <button type="submit" className="btn-three w-100">Register</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

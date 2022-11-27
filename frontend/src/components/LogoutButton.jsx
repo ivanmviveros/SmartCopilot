@@ -1,5 +1,3 @@
-// import React, { useContext } from "react";
-// import UserContext from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 const LogoutButton = () => {
@@ -10,7 +8,8 @@ const LogoutButton = () => {
     navigate("/login")
   }
   return (
-    <span onClick={logout} style={{ cursor: 'pointer' }} className="navbar-text">Logout
+    <span onClick={logout} style={{ cursor: 'pointer' }}>
+      <i className="bi bi-box-arrow-right text-white fs-4"></i>
     </span>
   );
 };

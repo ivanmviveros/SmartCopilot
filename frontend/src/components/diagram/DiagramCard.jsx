@@ -1,8 +1,6 @@
-// import React, { useState } from 'react';
-import diagrama from "../../assets/diagrama-de-flujo.png"
 import * as DiagramService from "../../service/DiagramService"
 import { Link } from 'react-router-dom';
-import React from "react";
+import React, { useEffect } from "react";
 
 function DiagramCard({ index, diagram, getListDiagrams, showAlert, projectId }) {
     const deleteDiagram = async () => {
@@ -16,49 +14,48 @@ function DiagramCard({ index, diagram, getListDiagrams, showAlert, projectId }) 
         }
     }
 
+    useEffect(() => {
+        document.getElementById('diagram ' + diagram.id).innerHTML = diagram.svg
+    }, [diagram]);
+
     return (
-        <>
-            <div className={`m-2 card card_diagram`}>
-                <img src={diagrama} className="card-img-top" alt="Diagram" />
-                <div className="card-body">
-                    <h5 className="card-title truncated_text">{diagram.name}</h5>
-                    <p className="card-text truncated_text">{diagram.description}</p>
-                    <div className="row">
-                        <hr />
-                        <div className="col-sm-6 mx-3">
-                            <div className="row">
-                                <Link className="btn btn-primary" to={`/project/${projectId}/diagram/${diagram.id}`}>Open</Link>
-                            </div>
-                        </div>
-                        <div className="col-sm-2">
-                            <button className="btn btn-danger fw-bold" data-bs-toggle="modal" data-bs-target={`#diagram${diagram.id}`}>
-                                X
-                            </button>
-                        </div>
-                    </div>
+        <div className="cont-card-diagrams">
+            <div className="card-diagrams bg-one rounded shadow-lg">
+                <div className="d-flex justify-content-between align-items-center py-2 px-3 h-20">
+                    <p className="text-white fw-semibold truncated_text mb-0 pe-3">{diagram.name}</p>
+                    <button className="btn-one p-0" data-bs-toggle="modal" data-bs-target={`#diagram${diagram.id}`}>
+                        <i className="bi bi-trash-fill text-white fs-6"></i>
+                    </button>
+                </div>
+                <div className="h-80 p-1 pt-0">
+                    <Link to={`/project/${projectId}/diagram/${diagram.id}`}>
+                        <div id={`diagram ${diagram.id}`} className="svg-diagram bg-white rounded overflow-hidden h-100"></div>
+                    </Link>
                 </div>
             </div>
 
             {/* Modal delete*/}
             <div className="modal fade" id={`diagram${diagram.id}`} aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">Delete Diagram</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content bg-two border-0">
+                        <div className="modal-header bg-one">
+                            <h5 className="modal-title text-white" id="exampleModalLabel">Delete Diagram</h5>
+                            <button type="button" className="btn-one px-1" data-bs-dismiss="modal" aria-label="Close">
+                                <i className="bi bi-x-lg"></i>
+                            </button>
                         </div>
-                        <div className="modal-body">
-                            Are you sure to delete {diagram.name}?
+                        <div className="modal-body text-start">
+                            <p className="word_break mb-0">Are you sure to delete '{diagram.name}'?</p>
                         </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button id="deleteDiagramButton" data-bs-dismiss="modal" onClick={() => deleteDiagram()} type="button" className="btn btn-danger">Delete</button>
+                        <div className="modal-footer border-0">
+                            <button type="button" className="btn-two shadow-lg py-1" data-bs-dismiss="modal">Cancel</button>
+                            <button id="deleteDiagramButton" className="btn-one shadow-lg py-1" data-bs-dismiss="modal" onClick={() => deleteDiagram()} type="button">Delete</button>
                         </div>
                     </div>
                 </div>
             </div>
             {/* Modal-end */}
-        </>
+        </div>
     )
 }
 export default DiagramCard;

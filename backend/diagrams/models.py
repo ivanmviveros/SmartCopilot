@@ -9,6 +9,7 @@ class Diagram(models.Model):
     name = models.TextField()
     description = models.TextField(null=True, blank=True)
     xml = models.TextField()
+    svg = models.TextField(default='Nothing')
     json_user_histories = models.JSONField(null=True, blank=True)
     id_project = models.ForeignKey(
         Project, null=True, blank=True, on_delete=models.CASCADE, db_column='id_project')
