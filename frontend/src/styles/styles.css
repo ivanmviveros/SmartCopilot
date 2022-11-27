@@ -259,6 +259,14 @@ h5,
 }
 
 /* Text --- Size */
+.fs-12 {
+    font-size: 0.75em;
+}
+
+.fs-16 {
+    font-size: 1em;
+}
+
 .fs-20 {
     font-size: 1.25em;
 }

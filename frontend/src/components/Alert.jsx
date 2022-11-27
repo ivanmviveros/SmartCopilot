@@ -6,13 +6,13 @@ function Alert(props) {
 
     useEffect(() => {
         if (props.type === 'Success') {
-            setBackgroundColor('text-bg-success text-white')
+            setBackgroundColor('bg-success text-white')
             setIcon('bi bi-check-circle')
         } else if (props.type === 'Error') {
-            setBackgroundColor('text-bg-danger text-white')
+            setBackgroundColor('bg-danger text-white')
             setIcon('bi bi-x-circle')
         } else if (props.type === 'Warning') {
-            setBackgroundColor('text-bg-warning')
+            setBackgroundColor('bg-warning text-one')
             setIcon('bi bi-exclamation-triangle-fill')
         }
     }, [props.type]);
@@ -31,9 +31,9 @@ function Alert(props) {
                     {props.message}
                     {
                         props.type === 'Warning' ?
-                            <div className="mt-2 pt-2 border-top">
-                                <button type="button" className="btn btn-primary btn-sm" onClick={props.action}>Yes</button>
-                                <button type="button" className="btn btn-secondary btn-sm ms-2" data-bs-dismiss="toast">No</button>
+                            <div className="mt-2 pt-2">
+                                <button type="button" className="btn-one btn-sm" onClick={props.action}>Yes</button>
+                                <button type="button" className="btn-two btn-sm ms-2" data-bs-dismiss="toast">No</button>
                             </div>
                             : ''
                     }

@@ -28,7 +28,7 @@ function ModalUserStories(props) {
         if (props.modalUserStories._isShown === true) {
             const ListUserStories = props.jsonCreate(props.modeler).userStories;
             setUserStories(ListUserStories);
-            if(ListUserStories.length > 0){
+            if (ListUserStories.length > 0) {
                 setSelectedUserStory(ListUserStories[0]);
                 const arrDependencies = props.createDependencies(ListUserStories[0].element)
                 setSelectedUserStory((prevState) => ({
@@ -136,11 +136,11 @@ function ModalUserStories(props) {
                             {
                                 selectedUserStory.dependencies.length > 0 ?
                                     <div className='rounded-2 bg-info bg-opacity-10'>
-                                        <div className='bg-info bg-opacity-25 rounded-top'>
-                                            <p className='text-center fw-bold mb-0'>Dependencies</p>
+                                        <div className='bg-one bg-opacity-25 rounded-top py-1'>
+                                            <p className='text-center text-white fw-bold mb-0'>Dependencies</p>
                                         </div>
                                         <div className='p-3'>
-                                            <table className='table table-cursor table-striped table-hover mb-0'>
+                                            <table className='table table-cursor table-striped table-hover bg-two rounded mb-0'>
                                                 <tbody>
                                                     {
                                                         selectedUserStory.dependencies.map((element, i) =>

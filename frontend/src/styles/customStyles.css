@@ -268,3 +268,15 @@ body::-webkit-scrollbar-track {
 #table-list-user-stories tbody tr:hover {
   background-color: var(--color-three) !important;
 }
+
+/* Checkbox */
+.form-check-input:checked {
+  background-color: var(--color-one);
+  border-color: var(--color-one);
+}
+
+/* Accordion */
+.accordion-button:not(.collapsed) {
+  color: var(--color-one);
+  background-color: var(--color-three);
+}
