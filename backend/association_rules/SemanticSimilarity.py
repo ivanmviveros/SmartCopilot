@@ -19,9 +19,6 @@ class SemanticSimilarity:
         corpus = self.nlp.pipe(corpus)
         similarDoc = []
 
-        doc1 = self.nlp("get items added to cart")
-        doc2 = self.nlp("send invoice to customer")
-
         # print('---------------------')
         # print('------', query.text, '------')
         for doc in corpus:
