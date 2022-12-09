@@ -203,8 +203,8 @@ function ModelerComponent() {
       invalidParticipants.forEach(element => {
         overlayId = overlays.add(element, {
           position: {
-            top: -12,
-            right: 55
+            top: -19,
+            right: 195
           },
           html: `<div class="pool-note-error">
                   <span class="me-2 text-white"><i class="bi bi-exclamation-octagon-fill"></i></span>
@@ -216,7 +216,7 @@ function ModelerComponent() {
       invalidTasks.forEach(element => {
         overlayId = overlays.add(element, {
           position: {
-            top: -17,
+            top: -12,
             left: -5
           },
           html: `<div class="task-note-error">
@@ -443,6 +443,11 @@ function ModelerComponent() {
               Save
             </button>
           </div>
+        </div>
+
+        {/* Instructions */}
+        <div id='instructions-modeler' className='bg-one rounded shadow-lg z-index-1000 position-absolute bottom-0 start-0 m-3 p-2'>
+          <p className='mb-0 text-white text-center fs-12'><strong className='text-white'>Right click (On the task)</strong> Open task properties</p>
         </div>
 
         {/* EBPM */}

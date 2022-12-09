@@ -54,7 +54,7 @@ class Apriori:
 
         self.similarity.unload_nlp()
 
-        return recommendations
+        return recommendations[:20]
 
     def add(self, request):
         [arrBaseGroups, sentenceBaseGroups,

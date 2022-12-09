@@ -354,3 +354,8 @@ h5,
 .text-decoration-none {
     text-decoration: none;
 }
+
+/* z-index */
+.z-index-1000 {
+    z-index: 1000;
+}
