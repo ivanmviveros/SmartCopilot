@@ -72,8 +72,8 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
 }
 
 .pool-note-error {
@@ -280,4 +280,9 @@ body::-webkit-scrollbar-track {
 .accordion-button:not(.collapsed) {
   color: var(--color-one);
   background-color: var(--color-three);
+}
+
+/* Tooltip */
+.tooltip-bg-one {
+  --bs-tooltip-bg: var(--color-one);
 }

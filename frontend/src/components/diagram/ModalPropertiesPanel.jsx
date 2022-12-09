@@ -4,12 +4,17 @@ import { is } from 'bpmn-js/lib/util/ModelUtil';
 // Components
 import ListRecommendations from './ListRecommendations';
 
+import {
+    Tooltip
+} from 'bootstrap';
+
 function ModalPropertiesPanel(props) {
     const [tasks, setTasks] = useState([]);
     const [panelRecommendations, setPanelRecommendations] = useState(false);
     const [contentPriority] = useState(['Low', 'Medium', 'High']);
     const [contentPoints] = useState([1, 2, 3, 5, 8, 13, 21]);
-    // const [overlaySmart, setOverlaySmart] = useState(null);
+    const [tooltipTriggerList, setTooltipTriggerList] = useState([]);
+    const [tooltipList, setTooltipList] = useState([]);
     const [userHistory, setUserHistory] = useState({
         'uh:name': '',
         'uh:priority': '',
@@ -77,8 +82,9 @@ function ModalPropertiesPanel(props) {
         }))
     }
 
-    const openListRecommendations = () => {
+    const openListRecommendations = (e) => {
         setPanelRecommendations(!panelRecommendations);
+        tooltipList[0].hide()
     }
 
     const createElement = (parent, name) => {
@@ -131,11 +137,11 @@ function ModalPropertiesPanel(props) {
             if (userHistory['uh:smart'] === true && index === -1) { // Create overlay Smart
                 const overlayId = overlays.add(props.selectedElement, {
                     position: {
-                        bottom: 15,
-                        right: 15
+                        bottom: 17,
+                        right: 17
                     },
                     html: `<div class="smart-note">
-                                <span class="text-white"><i class="bi bi-cpu"></i></span>
+                                <img class="w-80" src="/img/icono_smart.webp"></img>
                             </div>`
                 });
                 props.setOverlaysSmart(prevState => [...prevState, { overlayId: overlayId, taskId: props.selectedElement.businessObject.id }])
@@ -160,6 +166,9 @@ function ModalPropertiesPanel(props) {
             setUserHistory(createProperties(props.selectedElement, props.typeElement));
             addDependencies();
         }
+
+        setTooltipTriggerList(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        setTooltipList([...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl)))
     }, [props.modalPropertiesPanel]);
 
     return (
@@ -178,7 +187,7 @@ function ModalPropertiesPanel(props) {
                                 <label className="form-label">Name:</label>
                                 <div className='d-flex'>
                                     <input className="form-control" name='uh:name' value={userHistory['uh:name']} onChange={updateLabel} />
-                                    <button className='btn-one px-3 ms-3 d-flex align-items-center' onClick={() => openListRecommendations()}>
+                                    <button className='btn-one px-3 ms-3 d-flex align-items-center' onClick={(e) => openListRecommendations(e)} data-bs-toggle="tooltip" data-bs-custom-class="tooltip-bg-one" data-bs-placement="top" data-bs-title="Pilot recommendations">
                                         <i className="bi bi-lightbulb-fill me-1"></i>
                                         <i className={`bi ${panelRecommendations ? 'bi-chevron-right' : 'bi-chevron-left'}`}></i>
                                     </button>

@@ -118,11 +118,11 @@ function ModelerComponent() {
     tasks.forEach((element, i) => {
       overlayId = overlays.add(element, {
         position: {
-          bottom: 15,
-          right: 15
+          bottom: 17,
+          right: 17
         },
         html: `<div class="smart-note">
-                <span class="text-white"><i class="bi bi-cpu"></i></span>
+                <img class="w-80" src="/img/icono_smart.webp"></img>
               </div>`
       });
       smartTags.push({
