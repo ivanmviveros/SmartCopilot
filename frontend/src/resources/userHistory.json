@@ -23,6 +23,16 @@
                 "type": "Integer"
             },
             {
+                "name": "smart",
+                "isAttr": true,
+                "type": "Boolean"
+            },
+            {
+                "name": "developer",
+                "isAttr": true,
+                "type": "String"
+            },
+            {
                 "name": "purpose",
                 "isAttr": true,
                 "type": "String"
@@ -31,14 +41,11 @@
                 "name": "restrictions",
                 "isAttr": true,
                 "type": "String"
-            }, {
+            },
+            {
                 "name": "acceptanceCriteria",
                 "isAttr": true,
                 "type": "String"
-            }, {
-                "name": "smart",
-                "isAttr": true,
-                "type": "Boolean"
             }
         ]
     }],

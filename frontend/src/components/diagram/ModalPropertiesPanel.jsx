@@ -11,7 +11,7 @@ import {
 function ModalPropertiesPanel(props) {
     const [tasks, setTasks] = useState([]);
     const [panelRecommendations, setPanelRecommendations] = useState(false);
-    const [contentPriority] = useState(['Low', 'Medium', 'High']);
+    const [contentPriority] = useState(['Very low', 'Low', 'Medium', 'High', 'Very high']);
     const [contentPoints] = useState([1, 2, 3, 5, 8, 13, 21]);
     const [tooltipTriggerList, setTooltipTriggerList] = useState([]);
     const [tooltipList, setTooltipList] = useState([]);
@@ -19,10 +19,11 @@ function ModalPropertiesPanel(props) {
         'uh:name': '',
         'uh:priority': '',
         'uh:points': '',
+        'uh:smart': false,
+        'uh:developer': '',
         'uh:purpose': '',
         'uh:restrictions': '',
         'uh:acceptanceCriteria': '',
-        'uh:smart': false,
         'uh:dependencies': [],
     });
 
@@ -216,6 +217,10 @@ function ModalPropertiesPanel(props) {
                                         <input className="form-check-input" type="checkbox" role="switch" value={userHistory['uh:smart']} checked={userHistory['uh:smart']} onChange={() => handleOnChangeCheck('uh:smart')} />
                                     </div>
                                 </div>
+                            </div>
+                            <div className="pb-3">
+                                <label className="form-label">Developer:</label>
+                                <input className="form-control" name='uh:developer' value={userHistory['uh:developer']} onChange={updateProperties} />
                             </div>
                             <div className="pb-3">
                                 <label className="form-label">Purpose:</label>
