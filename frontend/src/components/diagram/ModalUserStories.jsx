@@ -17,11 +17,6 @@ function ModalUserStories(props) {
     const selectUserStory = (elementId) => {
         const userStory = userStories.find(element => elementId === element.id)
         setSelectedUserStory(userStory);
-        const arrDependencies = props.createDependencies(userStory.element);
-        setSelectedUserStory((prevState) => ({
-            ...prevState,
-            'dependencies': arrDependencies
-        }))
     }
 
     useEffect(() => {
@@ -30,11 +25,6 @@ function ModalUserStories(props) {
             setUserStories(ListUserStories);
             if (ListUserStories.length > 0) {
                 setSelectedUserStory(ListUserStories[0]);
-                const arrDependencies = props.createDependencies(ListUserStories[0].element)
-                setSelectedUserStory((prevState) => ({
-                    ...prevState,
-                    'dependencies': arrDependencies
-                }))
             }
         }
     }, [props.modalUserStories]);

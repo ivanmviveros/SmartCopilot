@@ -76,7 +76,6 @@ function ProjectsList() {
     const getScrollBarWidth = () => {
         const scrollBarWidth = window.innerWidth - document.documentElement.getBoundingClientRect().width;
         document.documentElement.style.setProperty('--scrollbar-width', `${scrollBarWidth}px`)
-        console.log(scrollBarWidth);
     }
 
     useEffect(() => {

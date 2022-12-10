@@ -100,21 +100,79 @@ function DiagramsCardList() {
         toast.show();
     }
 
+    const sortUserStories = (arrUserStories, sortedUserStories) => {
+        var priorities = ['Very low', 'Low', 'Medium', 'High', 'Very high']
+        priorities = priorities.reverse();
+        var part
+
+        if (arrUserStories.length === 0) {
+            return sortedUserStories;
+        } else if (sortedUserStories.length === 0) {
+            // Filter by dependencies
+            part = arrUserStories.filter(element => element.dependencies.length === 0)
+        } else {
+            // Filter by dependencies
+            part = arrUserStories.filter(element => {
+                var foundNoDependencies = false
+                element.dependencies.forEach(dependence => {
+                    if (!sortedUserStories.find(task => task.id === dependence.id)) {
+                        foundNoDependencies = true
+                    }
+                })
+
+                if (foundNoDependencies) {
+                    return false
+                } else {
+                    return true
+                }
+            });
+
+            if (part.length === 0) {
+                var elements = arrUserStories.sort((a, b) => {
+                    return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
+                })
+                part = [elements[0]]
+            }
+        }
+
+        // Sort by priorities
+        part.sort((a, b) => {
+            return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
+        })
+
+        arrUserStories = arrUserStories.filter(elemento => part.indexOf(elemento) === -1);
+        sortedUserStories = sortedUserStories.concat(part)
+        return sortUserStories(arrUserStories, sortedUserStories)
+    }
+
     const jsonCreate = () => {
-        var newId = 1
-        let arrUserStories = []
-        console.log(diagrams);
+        var arrUserStories = []
+        var lengthUserStories = 0
         diagrams.forEach((element, i) => {
             if (element.json_user_histories?.userStories) {
                 element.json_user_histories.userStories.map(us => {
-                    us.id = 'US-' + newId
-                    newId++
+                    // Change id user story
+                    var usIdNumber = us.id.split('-')[1];
+                    var idNumber = parseInt(usIdNumber) + lengthUserStories;
+                    us.id = 'US-' + idNumber;
+
+                    // Change id dependencies
+                    us.dependencies.map(dependence => {
+                        var dependenceIdNumber = dependence.id.split('-')[1];
+                        var idNumber = parseInt(dependenceIdNumber) + lengthUserStories;
+                        dependence.id = 'US-' + idNumber;
+                        return dependence
+                    });
+
                     return us
                 })
+                lengthUserStories = lengthUserStories + element.json_user_histories.userStories.length;
                 arrUserStories = arrUserStories.concat(element.json_user_histories.userStories)
             }
         });
 
+        // Sort tasks by priority and dependencies
+        arrUserStories = sortUserStories(arrUserStories, [])
 
         return {
             projectId: projectId,

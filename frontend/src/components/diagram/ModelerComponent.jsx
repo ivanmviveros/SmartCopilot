@@ -264,13 +264,55 @@ function ModelerComponent() {
     }))
   }
 
+  const sortUserStories = (arrUserStories, sortedUserStories) => {
+    var priorities = ['Very low', 'Low', 'Medium', 'High', 'Very high']
+    priorities = priorities.reverse();
+    var part
+
+    if (arrUserStories.length === 0) {
+      return sortedUserStories;
+    } else if (sortedUserStories.length === 0) {
+      // Filter by dependencies
+      part = arrUserStories.filter(element => element.dependencies.length === 0)
+    } else {
+      // Filter by dependencies
+      part = arrUserStories.filter(element => {
+        var foundNoDependencies = false
+        element.dependencies.forEach(dependence => {
+          if (!sortedUserStories.find(task => task.id === dependence.id)) {
+            foundNoDependencies = true
+          }
+        })
+
+        if (foundNoDependencies) {
+          return false
+        } else {
+          return true
+        }
+      });
+
+      if (part.length === 0) {
+        var elements = arrUserStories.sort((a, b) => {
+          return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
+        })
+        part = [elements[0]]
+      }
+    }
+
+    // Sort by priorities
+    part.sort((a, b) => {
+      return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
+    })
+
+    arrUserStories = arrUserStories.filter(elemento => part.indexOf(elemento) === -1);
+    sortedUserStories = sortedUserStories.concat(part)
+    return sortUserStories(arrUserStories, sortedUserStories)
+  }
+
   const jsonCreate = () => {
-    let arrUserStories = []
+    var arrUserStories = []
     const elementRegistry = instanceModeler.get('elementRegistry');
     var arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
-    arrElements = arrElements.sort((a, b) => {
-      return a.id - b.id;
-    });
 
     arrElements.forEach(element => {
       let uh = {
@@ -284,10 +326,13 @@ function ModelerComponent() {
         'restrictions': element.businessObject.get('uh:restrictions') ? element.businessObject.get('uh:restrictions') : "",
         'acceptanceCriteria': element.businessObject.get('uh:acceptanceCriteria') ? element.businessObject.get('uh:acceptanceCriteria') : "",
         'dependencies': createDependencies(element),
-        'element': element
       }
       arrUserStories.push(uh)
     });
+
+    // Sort tasks by priority and dependencies
+    arrUserStories = sortUserStories(arrUserStories, []);
+
     return {
       diagramId: diagramId,
       userStories: arrUserStories
@@ -336,10 +381,12 @@ function ModelerComponent() {
   const iterElement = (actualElement, arrDependencies) => {
     actualElement.incoming.forEach(element => {
       if (is(element.source, 'bpmn:Task') || is(element.source, 'bpmn:CallActivity')) {
-        arrDependencies.push({
-          id: element.source.businessObject.id,
-          name: element.source.businessObject.name
-        })
+        if (!arrDependencies.find(dependence => dependence.id === element.source.businessObject.id)) {
+          arrDependencies.push({
+            id: element.source.businessObject.id,
+            name: element.source.businessObject.name
+          })
+        }
       } else {
         iterElement(element.source, arrDependencies)
       }
@@ -457,7 +504,7 @@ function ModelerComponent() {
       <ModalDiagram mode='Edit' handle={handleChange} name={diagram.name} description={diagram.description} />
       <ModalPropertiesPanel overlaysSmart={overlaysSmart} setOverlaysSmart={setOverlaysSmart} createTagUH={createTagUH} newTask={newTask} setNewTask={setNewTask} selectedElement={selectedElement} createDependencies={createDependencies} modeler={instanceModeler} typeElement={typeElement} modalPropertiesPanel={modalPropertiesPanel} refModalPropertiesElement={refModalPropertiesElement} />
       <ModalPdf jsonCreate={jsonCreate} modeler={instanceModeler} modalPdf={modalPdf} refModalPdf={refModalPdf}></ModalPdf>
-      <ModalUserStories jsonCreate={jsonCreate} createDependencies={createDependencies} modeler={instanceModeler} modalUserStories={modalUserStories} refModalUserStories={refModalUserStories} openModalPdf={openModalPdf} loadCreateUserStories={loadCreateUserStories}></ModalUserStories>
+      <ModalUserStories jsonCreate={jsonCreate} modeler={instanceModeler} modalUserStories={modalUserStories} refModalUserStories={refModalUserStories} openModalPdf={openModalPdf} loadCreateUserStories={loadCreateUserStories}></ModalUserStories>
       <Alert type={alertType} message={alertMessage} refAlertElement={refAlertElement} />
     </div>
   )
