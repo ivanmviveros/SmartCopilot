@@ -167,7 +167,6 @@ function ModelerComponent() {
       try {
         // Update Diagram
         const data = await modeler.saveXML({ format: true });
-        console.log(data.xml)
         const resultSvg = await modeler.saveSVG({ format: true });
         const formData = {
           name: diagram.name,
