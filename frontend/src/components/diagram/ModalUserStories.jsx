@@ -21,7 +21,7 @@ function ModalUserStories(props) {
 
     useEffect(() => {
         if (props.modalUserStories._isShown === true) {
-            const ListUserStories = props.jsonCreate(props.modeler).userStories;
+            const ListUserStories = props.jsonCreate().userStories;
             setUserStories(ListUserStories);
             if (ListUserStories.length > 0) {
                 setSelectedUserStory(ListUserStories[0]);

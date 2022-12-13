@@ -170,7 +170,6 @@ function ModelerComponent() {
       try {
         // Update Diagram
         const data = await modeler.saveXML({ format: true });
-        console.log(data.xml)
         const resultSvg = await modeler.saveSVG({ format: true });
         const formData = {
           name: diagram.name,
@@ -323,7 +322,7 @@ function ModelerComponent() {
         'id': element.businessObject.id ? element.businessObject.id : "",
         'project': project.name ? project.name : "",
         'name': element.businessObject.name ? element.businessObject.name : "",
-        'actor': element.businessObject.lanes.length > 0 ? element.businessObject.lanes[0].name : element.parent.businessObject.name ? element.parent.businessObject.name : "",
+        'actor': element.businessObject?.lanes ? element.businessObject.lanes[0].name : element.parent.businessObject.name ? element.parent.businessObject.name : "",
         'priority': element.businessObject.get('uh:priority') ? element.businessObject.get('uh:priority') : "",
         'points': element.businessObject.get('uh:points') ? element.businessObject.get('uh:points') : "",
         'purpose': element.businessObject.get('uh:purpose') ? element.businessObject.get('uh:purpose') : "",
