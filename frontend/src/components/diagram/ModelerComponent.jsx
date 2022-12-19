@@ -290,13 +290,14 @@ function ModelerComponent() {
           return true
         }
       });
+    }
 
-      if (part.length === 0) {
-        var elements = arrUserStories.sort((a, b) => {
-          return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
-        })
-        part = [elements[0]]
-      }
+    // If there is a cycle
+    if (part.length === 0) {
+      var elements = arrUserStories.sort((a, b) => {
+        return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
+      })
+      part = [elements[0]]
     }
 
     // Sort by priorities
@@ -319,7 +320,7 @@ function ModelerComponent() {
         'id': element.businessObject.id ? element.businessObject.id : "",
         'project': project.name ? project.name : "",
         'name': element.businessObject.name ? element.businessObject.name : "",
-        'actor': element.businessObject?.lanes ? element.businessObject.lanes[0].name : element.parent.businessObject.name ? element.parent.businessObject.name : "",
+        'actor': element.businessObject?.lanes && element.businessObject.lanes.length > 0 ? element.businessObject.lanes[0].name : element.parent.businessObject.name ? element.parent.businessObject.name : "",
         'priority': element.businessObject.get('uh:priority') ? element.businessObject.get('uh:priority') : "",
         'points': element.businessObject.get('uh:points') ? element.businessObject.get('uh:points') : "",
         'purpose': element.businessObject.get('uh:purpose') ? element.businessObject.get('uh:purpose') : "",

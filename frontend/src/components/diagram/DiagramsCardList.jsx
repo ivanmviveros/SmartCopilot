@@ -126,13 +126,14 @@ function DiagramsCardList() {
                     return true
                 }
             });
+        }
 
-            if (part.length === 0) {
-                var elements = arrUserStories.sort((a, b) => {
-                    return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
-                })
-                part = [elements[0]]
-            }
+        // If there is a cycle
+        if (part.length === 0) {
+            var elements = arrUserStories.sort((a, b) => {
+                return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
+            })
+            part = [elements[0]]
         }
 
         // Sort by priorities
