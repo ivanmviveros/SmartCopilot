@@ -402,12 +402,7 @@ function ModelerComponent() {
           json_user_histories: jsonCreate(modeler),
         }
         const interoperabilityData ={
-          "historias": formData.json_user_histories.userStories.map(function (us) {
-            return {
-              "id": us.id,
-              "nombre":us.name
-            }
-          })
+          "userStories": formData.json_user_histories.userStories
         }
         await calculateDiagramMicroservices(interoperabilityData).then(
           res => res.json()).then(
