@@ -175,6 +175,7 @@ function ModelerComponent() {
           svg: resultSvg.svg,
           json_user_histories: jsonCreate(modeler),
         }
+        addAssociationRules();
         await updateDiagram(formData, diagramId).then(res => {
           setLoadSave(true);
         });
@@ -362,7 +363,6 @@ function ModelerComponent() {
     modalUserStories.hide();
     setLoadCreateUserStories(true)
     if (open) {
-      addAssociationRules();
       const modal = new Modal(refModalPdf.current, options);
       modal.show();
       setModalPdf(modal);
