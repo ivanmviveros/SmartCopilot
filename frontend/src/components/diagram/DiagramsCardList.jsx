@@ -141,6 +141,7 @@ function DiagramsCardList() {
             return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
         })
 
+        part = [part[0]]
         arrUserStories = arrUserStories.filter(elemento => part.indexOf(elemento) === -1);
         sortedUserStories = sortedUserStories.concat(part)
         return sortUserStories(arrUserStories, sortedUserStories)

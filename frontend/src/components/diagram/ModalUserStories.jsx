@@ -8,6 +8,7 @@ function ModalUserStories(props) {
         actor: '',
         priority: '',
         points: '',
+        developer: '',
         purpose: '',
         restrictions: '',
         acceptanceCriteria: '',
@@ -34,7 +35,7 @@ function ModalUserStories(props) {
             <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
                 <div className="modal-content bg-two border-0">
                     <div className="modal-header bg-one">
-                        <h5 className="modal-title text-white" id="tittlePropertiesPanel">User Stories List</h5>
+                        <h5 className="modal-title text-white" id="tittlePropertiesPanel">Product Backlog</h5>
                         <button type="button" className="btn-one px-1" data-bs-dismiss="modal" aria-label="Close">
                             <i className="bi bi-x-lg"></i>
                         </button>
@@ -52,8 +53,8 @@ function ModalUserStories(props) {
                                     {
                                         userStories.map((element, i) =>
                                             <tr key={i} onClick={() => selectUserStory(element.id)}>
-                                                <th scope="row">{element.id}</th>
-                                                <td>{element.name}</td>
+                                                <th className={selectedUserStory.id === element.id ? 'bg-one text-white' : ''} scope="row">{element.id}</th>
+                                                <td className={selectedUserStory.id === element.id ? 'bg-one text-white' : ''}>{element.name}</td>
                                             </tr>
                                         )
                                     }
@@ -104,10 +105,10 @@ function ModalUserStories(props) {
                                                 <td className='ps-3'>{selectedUserStory.priority}</td>
                                             </tr>
                                             {
-                                                selectedUserStory.acceptanceCriteria !== '' ?
+                                                selectedUserStory.developer !== '' ?
                                                     <tr>
-                                                        <th className="align-middle text-center">Acceptance Criteria</th>
-                                                        <td className='ps-3'>{selectedUserStory.acceptanceCriteria}</td>
+                                                        <th className="align-middle text-center">Developer</th>
+                                                        <td className='ps-3'>{selectedUserStory.developer}</td>
                                                     </tr>
                                                     : ''
                                             }
@@ -116,6 +117,14 @@ function ModalUserStories(props) {
                                                     <tr>
                                                         <th className="align-middle text-center">Restrictions</th>
                                                         <td className='ps-3'>{selectedUserStory.restrictions}</td>
+                                                    </tr>
+                                                    : ''
+                                            }
+                                            {
+                                                selectedUserStory.acceptanceCriteria !== '' ?
+                                                    <tr>
+                                                        <th className="align-middle text-center">Acceptance Criteria</th>
+                                                        <td className='ps-3'>{selectedUserStory.acceptanceCriteria}</td>
                                                     </tr>
                                                     : ''
                                             }
