@@ -85,6 +85,7 @@ function ModalPropertiesPanel(props) {
 
     const openListRecommendations = (e) => {
         setPanelRecommendations(!panelRecommendations);
+        setTasks([props.selectedElement.businessObject.name])
         tooltipList[0].hide()
     }
 

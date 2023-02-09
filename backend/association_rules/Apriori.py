@@ -39,13 +39,14 @@ class Apriori:
             if (group[0] == -1 or group[0] == -2):
                 for i in range(len(results.index)):
                     for j in range(len(list(results.iloc[i, 2]))):
-                        if(len(list(list(results.iloc[i, 2][j][0]))) > 0 and list(list(results.iloc[i, 2][j][0]))[0] == group[1]):
+                        if (len(list(list(results.iloc[i, 2][j][0]))) > 0 and list(list(results.iloc[i, 2][j][0]))[0] == group[1]):
                             index = np.where(arrResultGroups == list(
                                 list(results.iloc[i, 2][j][1]))[0])[0][0]
-                            recommendations.append({
-                                'sentence': arrResultGroups[index][1].capitalize(),
-                                'confidence': results.iloc[i, 2][j][2]
-                            })
+                            if (key != arrResultGroups[index][1]):
+                                recommendations.append({
+                                    'sentence': arrResultGroups[index][1].capitalize(),
+                                    'confidence': results.iloc[i, 2][j][2]
+                                })
                         else:
                             pass
 

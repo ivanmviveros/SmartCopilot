@@ -141,20 +141,30 @@ function ModelerComponent() {
     setLoadSave(false)
     const elementRegistry = modeler.get('elementRegistry');
     const overlays = modeler.get('overlays');
-    const participants = elementRegistry.filter(element => is(element, 'bpmn:Participant'));
     const tasks = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
+    const participants = elementRegistry.filter(element => is(element, 'bpmn:Participant'));
+    const lanes = elementRegistry.filter(element => is(element, 'bpmn:Lane'))
     const invalidParticipants = [];
     const invalidTasks = [];
     var isValid = true;
 
     // Validate
+    // Content task
     tasks.forEach(element => {
       if (element.businessObject.name === undefined || element.businessObject.name === null) {
         isValid = false;
         invalidTasks.push(element)
       }
     })
+    // Role pool
     participants.forEach(element => {
+      if (element.businessObject.name === undefined || element.businessObject.name === null) {
+        isValid = false;
+        invalidParticipants.push(element)
+      }
+    })
+    // Role lane
+    lanes.forEach(element => {
       if (element.businessObject.name === undefined || element.businessObject.name === null) {
         isValid = false;
         invalidParticipants.push(element)
@@ -178,6 +188,7 @@ function ModelerComponent() {
           svg: resultSvg.svg,
           json_user_histories: jsonCreate(modeler),
         }
+        addAssociationRules();
         await updateDiagram(formData, diagramId).then(res => {
           setLoadSave(true);
         });
@@ -293,13 +304,14 @@ function ModelerComponent() {
           return true
         }
       });
+    }
 
-      if (part.length === 0) {
-        var elements = arrUserStories.sort((a, b) => {
-          return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
-        })
-        part = [elements[0]]
-      }
+    // If there is a cycle
+    if (part.length === 0) {
+      var elements = arrUserStories.sort((a, b) => {
+        return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
+      })
+      part = [elements[0]]
     }
 
     // Sort by priorities
@@ -307,6 +319,7 @@ function ModelerComponent() {
       return priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
     })
 
+    part = [part[0]]
     arrUserStories = arrUserStories.filter(elemento => part.indexOf(elemento) === -1);
     sortedUserStories = sortedUserStories.concat(part)
     return sortUserStories(arrUserStories, sortedUserStories)
@@ -317,14 +330,22 @@ function ModelerComponent() {
     const elementRegistry = instanceModeler.get('elementRegistry');
     var arrElements = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
 
+    const getActor = (element) => {
+      if (is(element.parent, "bpmn:SubProcess")) return getActor(element.parent)
+      else if (element.businessObject?.lanes && element.businessObject.lanes.length > 0) return element.businessObject.lanes[0].name
+      else if (element.parent.businessObject.name) return element.parent.businessObject.name
+      else return ""
+    }
+
     arrElements.forEach(element => {
       let uh = {
         'id': element.businessObject.id ? element.businessObject.id : "",
         'project': project.name ? project.name : "",
         'name': element.businessObject.name ? element.businessObject.name : "",
-        'actor': element.businessObject?.lanes ? element.businessObject.lanes[0].name : element.parent.businessObject.name ? element.parent.businessObject.name : "",
+        'actor': getActor(element),
         'priority': element.businessObject.get('uh:priority') ? element.businessObject.get('uh:priority') : "",
         'points': element.businessObject.get('uh:points') ? element.businessObject.get('uh:points') : "",
+        'developer': element.businessObject.get('uh:developer') ? element.businessObject.get('uh:developer') : "",
         'purpose': element.businessObject.get('uh:purpose') ? element.businessObject.get('uh:purpose') : "",
         'restrictions': element.businessObject.get('uh:restrictions') ? element.businessObject.get('uh:restrictions') : "",
         'acceptanceCriteria': element.businessObject.get('uh:acceptanceCriteria') ? element.businessObject.get('uh:acceptanceCriteria') : "",
@@ -431,7 +452,6 @@ function ModelerComponent() {
     modalUserStories.hide();
     setLoadCreateUserStories(true)
     if (open) {
-      addAssociationRules();
       const modal = new Modal(refModalPdf.current, options);
       modal.show();
       setModalPdf(modal);
@@ -545,7 +565,7 @@ function ModelerComponent() {
           <div>
             {/* Button View US */}
             <button className="btn-four py-2 me-3" onClick={() => openModalUserStories()}>
-              <i className="bi bi-file-earmark-text"></i> View User Stories
+              <i className="bi bi-file-earmark-text"></i> View Product Backlog
             </button>
             {/* Button View MS */}
               <button className="btn-four py-2 me-3" onClick={() => onClickViewMicroservices(instanceModeler)} disabled={blockingViewMicroservices}>
