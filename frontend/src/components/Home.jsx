@@ -50,7 +50,7 @@ function Home() {
                     <img className="diagram-home rounded w-100" src="/img/diagram.webp" alt="diagram" />
                 </div>
                 <div className="w-40 p-5">
-                    <h1 className="text-white fw-bold fs-48">Enriched BPM</h1>
+                    <h1 className="text-white fw-bold fs-48">SmartCopilot</h1>
                     <p className="text-white">This project proposes a solution to the problem of requirements specification using a model called EBPM (Enriched Business Process Model), which allows assigning additional functionalities to the processes specified by means of BPMs, and then generating the user stories automatically.</p>
                     <Link className="btn-three text-decoration-none py-2" to="/projects">Create new project</Link>
                 </div>

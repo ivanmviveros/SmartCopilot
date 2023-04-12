@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getDiagram as getInfoDiagram, updateDiagram } from '../../service/DiagramService';
+import {calculateDiagramMicroservices, getDiagram as getInfoDiagram, updateDiagram} from '../../service/DiagramService';
 import { addRules } from '../../service/AprioriService';
 import { Toast, Modal } from 'bootstrap';
 import * as ProjectService from "../../service/ProjectService";
@@ -19,6 +19,8 @@ import Alert from '../Alert';
 import ModalPropertiesPanel from './ModalPropertiesPanel';
 import ModalUserStories from './ModalUserStories';
 import ModalPdf from '../pdfbacklog/ModalPdf';
+import {MICROSERVICE_VIEWER_URL} from "../../utils";
+import config from "bootstrap/js/src/util/config";
 
 
 function ModelerComponent() {
@@ -42,6 +44,7 @@ function ModelerComponent() {
   const [overlaysSmart, setOverlaysSmart] = useState([]);
   const [loadCreateUserStories, setLoadCreateUserStories] = useState(true);
   const [loadSave, setLoadSave] = useState(true);
+  const [blockingViewMicroservices, setBlockingViewMicroservices] = useState(false);
 
   const [diagram, setDiagram] = useState({
     name: '',
@@ -376,6 +379,73 @@ function ModelerComponent() {
     setModalUserStories(modal);
   }
 
+  const onClickViewMicroservices = async (modeler) => {
+    const elementRegistry = modeler.get('elementRegistry');
+    const overlays = modeler.get('overlays');
+    const participants = elementRegistry.filter(element => is(element, 'bpmn:Participant'));
+    const tasks = elementRegistry.filter(element => is(element, 'bpmn:Task') || is(element, 'bpmn:CallActivity'));
+    const invalidParticipants = [];
+    const invalidTasks = [];
+    var isValid = true;
+
+    setBlockingViewMicroservices(true);
+    setAlertMessage('Generating Microservices');
+    setAlertType('Success');
+    const toast = new Toast(refAlertElement.current, {autohide:false});
+    toast.show();
+
+
+    // Validate
+    tasks.forEach(element => {
+      if (element.businessObject.name === undefined || element.businessObject.name === null) {
+        isValid = false;
+        invalidTasks.push(element)
+      }
+    })
+    participants.forEach(element => {
+      if (element.businessObject.name === undefined || element.businessObject.name === null) {
+        isValid = false;
+        invalidParticipants.push(element)
+      }
+    })
+
+    // Remove Notes
+    overlaysError.forEach(element => {
+      overlays.remove(element);
+    })
+
+    if (isValid) {
+      try {
+        // Update Diagram
+        const data = await modeler.saveXML({ format: true });
+        const resultSvg = await modeler.saveSVG({ format: true });
+        const formData = {
+          json_user_histories: jsonCreate(modeler),
+        }
+        const interoperabilityData ={
+          "userStories": formData.json_user_histories.userStories
+        }
+        await calculateDiagramMicroservices(interoperabilityData).then(
+          res => res.json()).then(
+            data => {
+              setBlockingViewMicroservices(false);
+              toast.hide();
+              window.open(`${MICROSERVICE_VIEWER_URL}?diagrama=${data["result"]}`, '_blank', 'noopener,noreferrer')
+            });
+
+      } catch (error) {
+        // Alert
+        setAlertMessage(`${error}`);
+        setAlertType('Error');
+        const toast = new Toast(refAlertElement.current);
+        toast.show();
+        setBlockingViewMicroservices(false);
+      }
+      return true
+    }
+    return false
+  }
+
   const openModalPdf = async () => {
     setLoadCreateUserStories(false)
     var open = await save(instanceModeler)
@@ -497,6 +567,10 @@ function ModelerComponent() {
             <button className="btn-four py-2 me-3" onClick={() => openModalUserStories()}>
               <i className="bi bi-file-earmark-text"></i> View Product Backlog
             </button>
+            {/* Button View MS */}
+              <button className="btn-four py-2 me-3" onClick={() => onClickViewMicroservices(instanceModeler)} disabled={blockingViewMicroservices}>
+                <i className="bi bi-file-earmark-text"></i> View MS
+              </button>
             {/* Button Save */}
             <button id="save_diagram" className="btn-one py-2" onClick={() => save(instanceModeler)} disabled={!loadSave}>
               {

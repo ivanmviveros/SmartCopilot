@@ -44,7 +44,7 @@ function Login() {
         <div id="login" className='d-flex justify-content-center align-items-center h-100'>
             <div>
                 <div className='mb-3'>
-                    <h1 className='text-center text-white fw-bold fs-48'>EBPM</h1>
+                    <h1 className='text-center text-white fw-bold fs-48'>SmartCopilot</h1>
                 </div>
 
                 <div className="card shadow-lg bg-one">

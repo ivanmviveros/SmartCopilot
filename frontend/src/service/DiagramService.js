@@ -1,5 +1,5 @@
 import {
-    API_URL
+    API_URL, MICROSERVICE_CALCULATOR_URL
 } from '../utils';
 
 export const createDiagram = async (data) => {
@@ -51,5 +51,16 @@ export const updateDiagram = async (data, diagramId) => {
 export const deleteDiagram = async (diagramId) => {
     return await fetch(`${API_URL}/diagrams/delete/${diagramId}`, {
         method: "DELETE",
+    })
+}
+
+export const calculateDiagramMicroservices = async (data) => {
+    console.log(MICROSERVICE_CALCULATOR_URL)
+    return await fetch(`${MICROSERVICE_CALCULATOR_URL}/algoritmos/algortimo-genetico-interoperabilidad`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
     })
 }

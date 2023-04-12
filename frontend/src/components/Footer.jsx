@@ -14,7 +14,7 @@ const Footer = () => {
             {/* Footer */}
             <div className="bg-one py-4">
                 <div className="text-center mb-2">
-                    <Link className="navbar-brand title text-white fs-32 fw-bold" to="/">EBPM</Link>
+                    <Link className="navbar-brand title text-white fs-32 fw-bold" to="/">SmartCopilot</Link>
                 </div>
 
                 <div className="d-flex justify-content-center mb-2">
