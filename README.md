@@ -1,5 +1,5 @@
-## Smart Copilot
-See how it works online http://http://143.110.227.203/
+## Smart Copilot (EBPM)
+
 
 ### Local configuration
 ### Frontend
