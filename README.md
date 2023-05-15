@@ -1,5 +1,6 @@
 ## Smart Copilot (EBPM)
 
+This project is available online at: http://143.110.227.203/
 
 ### Local configuration
 ### Frontend
