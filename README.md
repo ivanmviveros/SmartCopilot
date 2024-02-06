@@ -1,12 +1,15 @@
-## Local development
+## Smart Copilot (EBPM)
 
+This project is available online at: http://143.110.227.203/
+
+### Local configuration
 ### Frontend
 
 1. Set up local environment
 
 - Enter the frontend folder with `cd .\frontend\`
 - Create .env file at the project root, the same folder where package.json is located.
-- Add required variables to .env file like the example below, replace urls with bmpnus project host.
+- Add required variables to .env file like the example below, replace urls with smart copilot project host.
 ```
 BUILD_PATH = '/usr/local/apache2/htdocs/'
 REACT_APP_API_HOST = 'http://127.0.0.1:8000'

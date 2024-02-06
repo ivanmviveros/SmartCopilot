@@ -28,7 +28,7 @@ const NavBar = () => {
         <nav hidden={hide} className="navbar navbar-expand-lg navbar-dark bg-one">
             <div className="d-flex justify-content-between align-items-center w-100 p-2 mx-5">
                 <div>
-                    <Link className="navbar-brand title text-white fs-32 fw-bold" to="/">EBPM</Link>
+                    <Link className="navbar-brand title text-white fs-32 fw-bold" to="/">SmartCopilot</Link>
                 </div>
 
                 <div className="d-flex menu bg-two rounded shadow-lg py-2 px-4">
